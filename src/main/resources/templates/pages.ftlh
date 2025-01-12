@@ -3,5 +3,5 @@
 <head>
     <title>welcome</title>
 </head>
-<body> hello! </body>
+<body> Здесь будут лучшие сборки и их результаты! </body>
 </html>
