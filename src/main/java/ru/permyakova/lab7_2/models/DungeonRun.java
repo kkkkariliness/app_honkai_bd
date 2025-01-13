@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "dungeon_run")
@@ -11,7 +12,7 @@ import java.time.LocalTime;
 public class DungeonRun {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "d_id")
+    @Column(name = "d_id" )
     private Integer id;
 
     @ManyToOne
@@ -19,8 +20,8 @@ public class DungeonRun {
     private Dungeon dungeon;
 
     @ManyToOne
-    @JoinColumn(name = "d_build", nullable = false)
-    private Build build;
+    @JoinColumn(name = "d_character", nullable = false)
+    private Character character;
 
     @Column(name = "d_time_score", nullable = false)
     private LocalTime timeScore;

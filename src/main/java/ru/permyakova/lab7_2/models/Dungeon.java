@@ -1,8 +1,10 @@
 package ru.permyakova.lab7_2.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,9 +21,18 @@ public class Dungeon {
 
     @ManyToOne
     @JoinColumn(name = "d_region", nullable = false)
+    @JsonBackReference
     private Region region;
 
     @OneToMany(mappedBy = "dungeon", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DungeonRun> dungeonRuns;
-}
+    private List<DungeonRun> dungeonRuns = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Dungeon{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+}

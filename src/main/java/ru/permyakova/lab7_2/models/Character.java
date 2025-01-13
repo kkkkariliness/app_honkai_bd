@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,25 +22,11 @@ public class Character {
     @Column(name = "ch_rarity", nullable = false)
     private short rarity;
 
-    @ManyToOne
-    @JoinColumn(name = "ch_way", nullable = false)
-    private Way way;
+    @Column(name = "ch_way", nullable = false)
+    private String way;
 
-    @ManyToOne
-    @JoinColumn(name = "ch_type_of_battle", nullable = false)
-    private TypeOfBattle typeOfBattle;
-
-    @ManyToOne
-    @JoinColumn(name = "ch_boss", nullable = false)
-    private Boss boss;
-
-    @ManyToOne
-    @JoinColumn(name = "ch_elevation_material", nullable = false)
-    private ElevationMaterial elevationMaterial;
-
-    @ManyToOne
-    @JoinColumn(name = "ch_trace_pumping_material", nullable = false)
-    private TracePumpingMaterial tracePumpingMaterial;
+    @Column(name = "ch_type_of_battle", nullable = false)
+    private String typeOfBattle;
 
     @Column(name = "ch_date_of_meet", nullable = false)
     private LocalDate dateOfMeet;
@@ -51,8 +36,4 @@ public class Character {
 
     @Column(name = "ch_money_donat", nullable = false)
     private BigDecimal moneyDonat;
-
-    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Build> builds;
 }
-
