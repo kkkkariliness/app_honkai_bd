@@ -10,13 +10,20 @@
     <input type="text" id="name" name="name" required>
     <br><br>
     <label for="region">Регион:</label>
-    <select id="region" name="region.id">
-        <#list regions as region>
-            <option value="${region.id}">${region.name}</option>
-        </#list>
+    <select id="region" name="region.id" required>
+        <#if regions?? && (regions?size > 0)>
+            <#list regions as region>
+                <option value="${region.id}">${region.name}</option>
+            </#list>
+        <#else>
+            <option disabled>Нет доступных регионов</option>
+        </#if>
     </select>
     <br><br>
     <button type="submit">Сохранить</button>
+    <a href="/dungeons">
+        <button type="button">Отмена</button>
+    </a>
 </form>
 </body>
 </html>

@@ -16,9 +16,6 @@ import java.util.Optional;
 public class RegionController {
     private final RegionService regionService;
 
-    //@GetMapping
-
-
     @PostMapping("/new")
     public String createRegionForm(Region region) {
         regionService.saveRegion(region);

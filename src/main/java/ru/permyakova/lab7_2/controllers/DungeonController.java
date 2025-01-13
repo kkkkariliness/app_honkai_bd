@@ -6,49 +6,72 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.permyakova.lab7_2.models.Dungeon;
 import ru.permyakova.lab7_2.services.DungeonService;
-
-import java.util.List;
+import ru.permyakova.lab7_2.services.RegionService;
 
 @Controller
 @RequestMapping("/dungeons")
 @AllArgsConstructor
 public class DungeonController {
     private final DungeonService dungeonService;
-
-    // Метод для отображения всех данжей
-    @GetMapping("/")
-    public String listDungeons(Model model) {
-        List<Dungeon> dungeons = dungeonService.getAllDungeons();
-        model.addAttribute("dungeons", dungeons);
-        return "/"; // Ссылается на HTML-шаблон dungeon-list.ftlh
-    }
+    private final RegionService regionService;
 
     @GetMapping("/new")
     public String createDungeonForm(Model model) {
         model.addAttribute("dungeon", new Dungeon());
-        return "dungeon-form";
+        model.addAttribute("regions", regionService.getAllRegions());
+        return "dungeon-new";
     }
 
     @PostMapping("/save")
     public String saveDungeon(@ModelAttribute Dungeon dungeon) {
         dungeonService.addDungeon(dungeon);
-        return "redirect:/dungeons/";
+        return "redirect:/dungeons";
     }
+
+    @PostMapping("/update/{id}")
+    public String updateDungeon(@PathVariable Long id,
+                                @RequestParam String name,
+                                @RequestParam Integer regionId) {
+        Dungeon dungeon = dungeonService.getDungeonById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon Id: " + id));
+
+        dungeon.setName(name);
+        dungeon.setRegion(regionService.getRegionById(regionId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid region Id: " + regionId)));
+
+        dungeonService.updateDungeon(id, dungeon);
+        return "redirect:/dungeons";
+    }
+
 
     @GetMapping("/edit/{id}")
     public String editDungeonForm(@PathVariable Long id, Model model) {
-        Dungeon dungeon = dungeonService.getAllDungeons()
-                .stream()
-                .filter(d -> d.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        Dungeon dungeon = dungeonService.getDungeonById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon Id: " + id));
         model.addAttribute("dungeon", dungeon);
-        return "dungeon-form";
+        model.addAttribute("regions", regionService.getAllRegions());
+        return "dungeon-edit";
     }
 
-    @PostMapping("/delete/{id}")
+
+    @PostMapping("/{id}")
     public String deleteDungeon(@PathVariable Long id) {
         dungeonService.deleteDungeon(id);
-        return "redirect:/dungeons/";
+        return "redirect:/dungeons";
     }
+
+    @GetMapping("/{id}")
+    public String dungeonInfo(@PathVariable Long id, Model model) {
+        Dungeon dungeon = dungeonService.getDungeonById(id)
+                .orElse(null);
+
+        if (dungeon == null) {
+            model.addAttribute("error", "Dungeon not found with id: " + id);
+            return "error";
+        }
+
+        model.addAttribute("dungeon", dungeon);
+        return "dungeon-info";
+    }
+
 }

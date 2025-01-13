@@ -2,7 +2,6 @@ package ru.permyakova.lab7_2.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.ui.Model;
 import ru.permyakova.lab7_2.models.Region;
 
 import java.util.List;

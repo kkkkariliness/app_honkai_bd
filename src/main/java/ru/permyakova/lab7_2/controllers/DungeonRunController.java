@@ -4,59 +4,86 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.permyakova.lab7_2.models.Character;
+import ru.permyakova.lab7_2.models.Dungeon;
 import ru.permyakova.lab7_2.models.DungeonRun;
+import ru.permyakova.lab7_2.services.CharacterService;
 import ru.permyakova.lab7_2.services.DungeonRunService;
+import ru.permyakova.lab7_2.services.DungeonService;
+import ru.permyakova.lab7_2.services.RegionService;
 
-import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/dungeon-runs")
 @AllArgsConstructor
 public class DungeonRunController {
     private final DungeonRunService dungeonRunService;
+    private final DungeonService dungeonService;
+    private final CharacterService characterService;
+    private final RegionService regionService;
 
-//    @GetMapping("/start")
-//    public String showDungeonRunForm(Model model) {
-//        // Загрузка данных для выпадающих списков
-//        model.addAttribute("regions", regionService.getAllRegions());
-//        model.addAttribute("dungeons", dungeonService.getAllDungeons());
-//        model.addAttribute("characters", characterService.getAllCharacters());
-//        return "dungeon-run-start"; // Ваш HTML-шаблон
-//    }
+    @PostMapping
+    public String saveDungeonRun(
+            @RequestParam Long dungeon,
+            @RequestParam UUID character) {
 
-    @GetMapping("/")
-    public String listDungeonRuns(Model model) {
-        List<DungeonRun> dungeonRuns = dungeonRunService.getAllDungeonRuns();
-        model.addAttribute("dungeonRuns", dungeonRuns);
-        return "redirect:/";
-    }
+        DungeonRun dungeonRun = new DungeonRun();
 
-    @GetMapping("/new")
-    public String createDungeonRunForm(Model model) {
-        model.addAttribute("dungeonRun", new DungeonRun());
-        return "dungeon-run-form";
-    }
+        Dungeon selectedDungeon = dungeonService.getDungeonById(dungeon)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon ID: " + dungeon));
+        Character selectedCharacter = characterService.getCharacterById(character)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid character ID: " + character));
 
-    @PostMapping("/save")
-    public String saveDungeonRun(@ModelAttribute DungeonRun dungeonRun) {
+        dungeonRun.setDungeon(selectedDungeon);
+        dungeonRun.setCharacter(selectedCharacter);
+
+        dungeonRun.setTimeScore(dungeonRunService.generateRandomTime());
+
         dungeonRunService.addDungeonRun(dungeonRun);
-        return "redirect:/dungeon-runs/";
+
+        return "redirect:/dungeon-runs";
     }
 
     @GetMapping("/edit/{id}")
     public String editDungeonRunForm(@PathVariable Long id, Model model) {
-        DungeonRun dungeonRun = dungeonRunService.getAllDungeonRuns()
-                .stream()
-                .filter(dr -> dr.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        DungeonRun dungeonRun = dungeonRunService.getDungeonRunById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon run Id: " + id));
+
         model.addAttribute("dungeonRun", dungeonRun);
-        return "dungeon-run-form";
+        model.addAttribute("regions", regionService.getAllRegions());
+        model.addAttribute("dungeons", dungeonService.getAllDungeons());
+        model.addAttribute("characters", characterService.getAllCharacters());
+        return "dungeonruns-edit";
     }
+
+    @PostMapping("/update")
+    public String updateDungeonRun(
+            @RequestParam Long id,
+            @RequestParam Long dungeon,
+            @RequestParam UUID character) {
+
+        DungeonRun dungeonRun = dungeonRunService.getDungeonRunById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon run Id: " + id));
+
+        Dungeon selectedDungeon = dungeonService.getDungeonById(dungeon)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon ID: " + dungeon));
+        Character selectedCharacter = characterService.getCharacterById(character)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid character ID: " + character));
+
+        dungeonRun.setDungeon(selectedDungeon);
+        dungeonRun.setCharacter(selectedCharacter);
+
+        dungeonRunService.addDungeonRun(dungeonRun);
+
+        return "redirect:/dungeon-runs";
+    }
+
 
     @PostMapping("/delete/{id}")
     public String deleteDungeonRun(@PathVariable Long id) {
         dungeonRunService.deleteDungeonRun(id);
-        return "redirect:/dungeon-runs/";
+        return "redirect:/dungeon-runs";
     }
+
 }

@@ -1,6 +1,5 @@
 package ru.permyakova.lab7_2.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,10 +36,7 @@ public class Region {
                 '}';
     }
 
-    // Пример корректного возврата списка
     public List<Dungeon> getDungeons() {
         return dungeons != null ? dungeons : Collections.emptyList();
     }
-
-
 }

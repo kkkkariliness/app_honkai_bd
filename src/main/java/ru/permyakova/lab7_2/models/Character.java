@@ -37,3 +37,4 @@ public class Character {
     @Column(name = "ch_money_donat", nullable = false)
     private BigDecimal moneyDonat;
 }
+

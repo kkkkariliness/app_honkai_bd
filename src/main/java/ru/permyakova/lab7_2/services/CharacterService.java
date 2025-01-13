@@ -8,6 +8,7 @@ import ru.permyakova.lab7_2.models.Character;
 import ru.permyakova.lab7_2.repositories.CharacterRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,8 +18,15 @@ public class CharacterService {
 
     @Transactional(readOnly = true)
     public List<Character> getAllCharacters() {
-        return characterRepository.findAll(Sort.by("name"));
+        List<Character> characters = characterRepository.findAll(Sort.by("name"));
+        return characters;
     }
+
+    @Transactional(readOnly = true)
+    public Optional<Character> getCharacterById(UUID id) {
+        return characterRepository.findById(id);
+    }
+
 
     @Transactional
     public void addCharacter(Character character) {

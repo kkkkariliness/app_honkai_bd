@@ -8,6 +8,7 @@ import ru.permyakova.lab7_2.models.Dungeon;
 import ru.permyakova.lab7_2.repositories.DungeonRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -16,9 +17,14 @@ public class DungeonService {
 
     @Transactional(readOnly = true)
     public List<Dungeon> getAllDungeons() {
-        return dungeonRepository.findAll(Sort.by("name")); // Сортировка по названию
+        List<Dungeon> dungeons = dungeonRepository.findAll(Sort.by("name"));
+        return dungeons;
     }
 
+    @Transactional(readOnly = true)
+    public Optional<Dungeon> getDungeonById(Long id) {
+        return dungeonRepository.findById(id);
+    }
 
     @Transactional
     public void addDungeon(Dungeon dungeon) {
@@ -33,6 +39,7 @@ public class DungeonService {
         dungeon.setRegion(dungeonDetails.getRegion());
         dungeonRepository.save(dungeon);
     }
+
 
     @Transactional
     public void deleteDungeon(Long id) {

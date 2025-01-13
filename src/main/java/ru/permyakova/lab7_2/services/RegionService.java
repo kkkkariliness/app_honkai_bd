@@ -1,13 +1,10 @@
 package ru.permyakova.lab7_2.services;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.permyakova.lab7_2.models.Dungeon;
 import ru.permyakova.lab7_2.models.Region;
 import ru.permyakova.lab7_2.repositories.RegionRepository;
 
@@ -68,4 +65,8 @@ public class RegionService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Optional<Region> getRegionById(Long id) {
+        return regionRepository.findById(id);
+    }
 }

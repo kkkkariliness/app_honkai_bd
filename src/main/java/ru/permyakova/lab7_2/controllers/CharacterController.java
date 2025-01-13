@@ -16,23 +16,16 @@ import java.util.UUID;
 public class CharacterController {
     private final CharacterService characterService;
 
-    @GetMapping("/")
-    public String listCharacters(Model model) {
-        List<Character> characters = characterService.getAllCharacters();
-        model.addAttribute("characters", characters);
-        return "character-list";
-    }
-
     @GetMapping("/new")
     public String createCharacterForm(Model model) {
         model.addAttribute("character", new Character());
-        return "character-form";
+        return "characters-new";
     }
 
     @PostMapping("/save")
     public String saveCharacter(@ModelAttribute Character character) {
         characterService.addCharacter(character);
-        return "redirect:/characters/";
+        return "redirect:/characters";
     }
 
     @GetMapping("/edit/{id}")
@@ -41,14 +34,37 @@ public class CharacterController {
                 .stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("Несуществующий id: " + id));
         model.addAttribute("character", character);
-        return "character-form";
+        return "characters-edit";
     }
+
+    @PostMapping("/update/{id}")
+    public String updateCharacter(@PathVariable UUID id, @ModelAttribute Character characterDetails) {
+        characterService.updateCharacter(id, characterDetails);
+        return "redirect:/characters";
+    }
+
 
     @PostMapping("/delete/{id}")
     public String deleteCharacter(@PathVariable UUID id) {
         characterService.deleteCharacter(id);
-        return "redirect:/characters/";
+        return "redirect:/characters";
     }
+
+    @GetMapping("/{id}")
+    public String characterInfo(@PathVariable UUID id, Model model) {
+        Character character = characterService.getAllCharacters()
+                .stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Несуществующий id: " + id));
+
+        System.out.println("isAlive: " + character.isAlive()); // Проверка значения
+        model.addAttribute("character", character);
+        return "characters-info";
+    }
+
+
+
 }

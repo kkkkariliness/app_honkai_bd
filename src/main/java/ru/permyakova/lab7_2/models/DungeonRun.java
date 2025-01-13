@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "dungeon_run")
