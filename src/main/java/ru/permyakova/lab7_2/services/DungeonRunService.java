@@ -31,7 +31,7 @@ public class DungeonRunService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<DungeonRun> getDungeonRunById(Long id) {
+    public Optional<DungeonRun> getDungeonRunById(long id) {
         return dungeonRunRepository.findById(id);
     }
 
@@ -41,7 +41,7 @@ public class DungeonRunService {
     }
 
     @Transactional
-    public void updateDungeonRun(Long id, DungeonRun dungeonRunDetails) {
+    public void updateDungeonRun(long id, DungeonRun dungeonRunDetails) {
         DungeonRun dungeonRun = dungeonRunRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Нет похода в данж с id: " + id));
         dungeonRun.setCharacter(dungeonRunDetails.getCharacter());
@@ -50,7 +50,7 @@ public class DungeonRunService {
     }
 
     @Transactional
-    public void deleteDungeonRun(Long id) {
+    public void deleteDungeonRun(long id) {
         dungeonRunRepository.deleteById(id);
     }
 }

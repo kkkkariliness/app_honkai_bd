@@ -50,7 +50,12 @@ public class CharacterController {
     @GetMapping("/delete/{id}")
     public String characterInfo(@PathVariable UUID id, Model model) {
         Optional<Character> character = characterService.getCharacterById(id);
-        model.addAttribute("character", character);
+        if (character.isPresent()) {
+            model.addAttribute("character", character.get());
+        } else {
+            return "error-page"; // Замените на ваш шаблон для страницы ошибки
+        }
         return "characters-info";
     }
+
 }

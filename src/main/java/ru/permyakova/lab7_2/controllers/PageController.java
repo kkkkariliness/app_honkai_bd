@@ -30,7 +30,7 @@ public class PageController {
         this.dungeonRunService = dungeonRunService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String showStartPage(Model model) {
         model.addAttribute("regions", regionService.getAllRegions());
         model.addAttribute("dungeons", dungeonService.getAllDungeons());

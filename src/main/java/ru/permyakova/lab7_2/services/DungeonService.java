@@ -21,8 +21,12 @@ public class DungeonService {
         return dungeons;
     }
 
+    public List<Dungeon> getDungeonsByRegion(Integer regionId) {
+        return dungeonRepository.findByRegionId(regionId);
+    }
+
     @Transactional(readOnly = true)
-    public Optional<Dungeon> getDungeonById(Long id) {
+    public Optional<Dungeon> getDungeonById(long id) {
         return dungeonRepository.findById(id);
     }
 
@@ -32,7 +36,7 @@ public class DungeonService {
     }
 
     @Transactional
-    public void updateDungeon(Long id, Dungeon dungeonDetails) {
+    public void updateDungeon(long id, Dungeon dungeonDetails) {
         Dungeon dungeon = dungeonRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon Id: " + id));
         dungeon.setName(dungeonDetails.getName());
@@ -40,9 +44,8 @@ public class DungeonService {
         dungeonRepository.save(dungeon);
     }
 
-
     @Transactional
-    public void deleteDungeon(Long id) {
+    public void deleteDungeon(long id) {
         dungeonRepository.deleteById(id);
     }
 }

@@ -9,11 +9,8 @@
 <b>Название: </b>${dungeon.name}<br>
 <b>Регион: </b>${dungeon.region.name}<br>
 <hr>
-<form action="/dungeons/${dungeon.id}" method="post">
+<form action="/dungeons/delete/${dungeon.id}" method="post">
     <button type="submit">Удалить данж</button>
-</form>
-<form action="/dungeons/edit/${dungeon.id}" method="get">
-    <button type="submit">Изменить данж</button>
 </form>
 </body>
 </html>

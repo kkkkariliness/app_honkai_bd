@@ -41,7 +41,6 @@
     <br><br>
 
     <!-- Генерация случайного времени прохождения -->
-    <input type="hidden" name="timeScore" value="${dungeonRun.timeScore}">
     <p>Случайное время прохождения будет назначено автоматически.</p>
 
     <button type="submit">Сохранить</button>

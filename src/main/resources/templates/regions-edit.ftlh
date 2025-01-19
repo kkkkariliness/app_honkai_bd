@@ -10,7 +10,7 @@
     <input type="text" id="name" name="name" value="${region.name}" required/>
     <br><br>
     <button type="submit">Сохранить</button>
-    <a href="/regions">
+    <a href="/">
         <button type="button">Отмена</button>
     </a>
 </form>

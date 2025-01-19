@@ -35,7 +35,7 @@
     <br><br>
 
     <button type="submit">Сохранить</button>
-    <a href="/characters">
+    <a href="/">
         <button type="button">Отмена</button>
     </a>
 </form>

@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.permyakova.lab7_2.models.Region;
 import ru.permyakova.lab7_2.services.RegionService;
-
 import java.util.Optional;
 
 @Controller
@@ -26,6 +25,7 @@ public class RegionController {
         return "regions-new";
     }
 
+
     @PostMapping("/save")
     public String saveRegion(@ModelAttribute Region region) {
         regionService.saveRegion(region);
@@ -33,14 +33,18 @@ public class RegionController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editRegionForm(@PathVariable Long id, Model model) {
+    public String editRegionForm(@PathVariable long id, Model model) {
         Optional<Region> optionalRegion = regionService.getRegionById(id);
+        if (optionalRegion.isEmpty()) {
+            model.addAttribute("error", "Region not found with id: " + id);
+            return "error"; // Убедитесь, что у вас есть шаблон error.ftlh
+        }
         model.addAttribute("region", optionalRegion.get());
         return "regions-edit";
     }
 
     @PostMapping("/update/{id}")
-    public String updateRegion(@PathVariable Long id, @RequestParam String name) {
+    public String updateRegion(@PathVariable long id, @RequestParam String name) {
         Region region = regionService.getRegionById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid region Id: " + id));
         region.setName(name);
@@ -49,14 +53,23 @@ public class RegionController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteRegion(@PathVariable Long id) {
+    public String deleteRegion(@PathVariable long id) {
+        Optional<Region> optionalRegion = regionService.getRegionById(id);
+        if (optionalRegion.isEmpty()) {
+            throw new IllegalArgumentException("Region with ID " + id + " not found");
+        }
         regionService.deleteRegion(id);
         return "redirect:/";
     }
 
+
     @GetMapping("/delete/{id}")
-    public String regionInfo(@PathVariable Long id, Model model) {
+    public String regionInfo(@PathVariable long id, Model model) {
         Optional<Region> optionalRegion = regionService.getRegionById(id);
+        if (optionalRegion.isEmpty()) {
+            model.addAttribute("error", "Region not found with id: " + id);
+            return "error";
+        }
         model.addAttribute("region", optionalRegion.get());
         return "regions-info";
     }

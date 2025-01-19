@@ -5,8 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.permyakova.lab7_2.models.Dungeon;
+import ru.permyakova.lab7_2.models.Region;
 import ru.permyakova.lab7_2.services.DungeonService;
 import ru.permyakova.lab7_2.services.RegionService;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/dungeons")
@@ -29,7 +33,7 @@ public class DungeonController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateDungeon(@PathVariable Long id,
+    public String updateDungeon(@PathVariable long id,
                                 @RequestParam String name,
                                 @RequestParam Integer regionId) {
         Dungeon dungeon = dungeonService.getDungeonById(id)
@@ -45,7 +49,7 @@ public class DungeonController {
 
 
     @GetMapping("/edit/{id}")
-    public String editDungeonForm(@PathVariable Long id, Model model) {
+    public String editDungeonForm(@PathVariable long id, Model model) {
         Dungeon dungeon = dungeonService.getDungeonById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon Id: " + id));
         model.addAttribute("dungeon", dungeon);
@@ -55,16 +59,27 @@ public class DungeonController {
 
 
     @PostMapping("/delete/{id}")
-    public String deleteDungeon(@PathVariable Long id) {
+    public String deleteDungeon(@PathVariable long id) {
+        Optional<Dungeon> optionalDungeon = dungeonService.getDungeonById(id);
+        if (optionalDungeon.isEmpty()) {
+            throw new IllegalArgumentException("Region with ID " + id + " not found");
+        }
         dungeonService.deleteDungeon(id);
         return "redirect:/";
     }
 
     @GetMapping("/delete/{id}")
-    public String dungeonInfo(@PathVariable Long id, Model model) {
+    public String dungeonInfo(@PathVariable long id, Model model) {
         Dungeon dungeon = dungeonService.getDungeonById(id).orElse(null);
         model.addAttribute("dungeon", dungeon);
         return "dungeon-info";
     }
+
+    @GetMapping("/by-region/{regionId}")
+    @ResponseBody
+    public List<Dungeon> getDungeonsByRegion(@PathVariable Integer regionId) {
+        return dungeonService.getDungeonsByRegion(regionId);
+    }
+
 
 }

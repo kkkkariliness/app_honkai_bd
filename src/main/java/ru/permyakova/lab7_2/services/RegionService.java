@@ -30,7 +30,7 @@ public class RegionService {
     }
 
     @Transactional
-    public void updateRegion(Long id, Region regionDetails) {
+    public void updateRegion(long id, Region regionDetails) {
         Region region = regionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid region Id: " + id));
         region.setName(regionDetails.getName());
@@ -52,21 +52,16 @@ public class RegionService {
     }
 
     @Transactional
-    public Optional<Region> getRegionById(long id) {
-        return regionRepository.findById(id);
-    }
-
-    @Transactional
     public void deleteRegion(long id) {
         if (regionRepository.existsById(id)) {
-            regionRepository.deleteById(id);
+            regionRepository.deleteById(id); // Каскадное удаление данжей
         } else {
-            log.warn("Попытка удалить несуществующий регион с id: " + id);
+            log.warn("Attempted to delete non-existent region with id: " + id);
         }
     }
 
     @Transactional(readOnly = true)
-    public Optional<Region> getRegionById(Long id) {
+    public Optional<Region> getRegionById(long id) {
         return regionRepository.findById(id);
     }
 }

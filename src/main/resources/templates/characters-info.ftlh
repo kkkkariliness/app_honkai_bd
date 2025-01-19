@@ -20,12 +20,8 @@
 <br>
 <b>Задоначено денег для получения: </b>${character.moneyDonat}<br>
 <hr>
-<form action="/characters/${character.id}" method="post">
+<form action="/characters/delete/${character.id}" method="post">
     <button type="submit">Удалить персонажа</button>
-</form>
-<form action="/characters/edit/${character.id}" method="get">
-    <button type="submit">Изменить персонажа</button>
-
 </form>
 </body>
 </html>
