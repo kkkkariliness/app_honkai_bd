@@ -43,7 +43,7 @@ public class DungeonRunService {
     @Transactional
     public void updateDungeonRun(Long id, DungeonRun dungeonRunDetails) {
         DungeonRun dungeonRun = dungeonRunRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon run Id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Нет похода в данж с id: " + id));
         dungeonRun.setCharacter(dungeonRunDetails.getCharacter());
         dungeonRun.setTimeScore(dungeonRunDetails.getTimeScore());
         dungeonRunRepository.save(dungeonRun);

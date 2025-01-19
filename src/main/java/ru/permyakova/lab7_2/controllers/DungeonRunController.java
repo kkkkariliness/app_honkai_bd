@@ -31,9 +31,9 @@ public class DungeonRunController {
         DungeonRun dungeonRun = new DungeonRun();
 
         Dungeon selectedDungeon = dungeonService.getDungeonById(dungeon)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon ID: " + dungeon));
+                .orElseThrow(() -> new IllegalArgumentException("Нет данжа с ID: " + dungeon));
         Character selectedCharacter = characterService.getCharacterById(character)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid character ID: " + character));
+                .orElseThrow(() -> new IllegalArgumentException("Нет персонажа с ID: " + character));
 
         dungeonRun.setDungeon(selectedDungeon);
         dungeonRun.setCharacter(selectedCharacter);
@@ -64,12 +64,11 @@ public class DungeonRunController {
             @RequestParam UUID character) {
 
         DungeonRun dungeonRun = dungeonRunService.getDungeonRunById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon run Id: " + id));
-
+                .orElseThrow(() -> new IllegalArgumentException("Нет похода в данж с Id: " + id));
         Dungeon selectedDungeon = dungeonService.getDungeonById(dungeon)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid dungeon ID: " + dungeon));
+                .orElseThrow(() -> new IllegalArgumentException("Нет данжа с ID: " + dungeon));
         Character selectedCharacter = characterService.getCharacterById(character)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid character ID: " + character));
+                .orElseThrow(() -> new IllegalArgumentException("Нет персонажа ID: " + character));
 
         dungeonRun.setDungeon(selectedDungeon);
         dungeonRun.setCharacter(selectedCharacter);
@@ -79,11 +78,9 @@ public class DungeonRunController {
         return "redirect:/dungeon-runs";
     }
 
-
     @PostMapping("/delete/{id}")
     public String deleteDungeonRun(@PathVariable Long id) {
         dungeonRunService.deleteDungeonRun(id);
         return "redirect:/dungeon-runs";
     }
-
 }

@@ -6,8 +6,9 @@
 <body>
 <h1>Лучшая сборка в данж</h1>
 <hr>
+
+<!-- Выбор региона -->
 <form action="/dungeon-runs" method="post">
-    <!-- Выпадающий список для регионов -->
     <p>
         <label for="region">Выберите регион:</label>
         <select name="region" id="region">
@@ -15,12 +16,15 @@
                 <option value="${region.id}">${region.name}</option>
             </#list>
         </select>
-        <button type="button" onclick="window.location='/regions/new'">Добавить ещё регион</button>
-        <a href="/regions"> Подробнее...</a>
+        <button type="button" onclick="window.location='/regions/new'">Добавить регион</button>
+        <button type="button" onclick="window.location='/regions/edit/' + getElementById('region').value">Изменить регион</button>
+        <button type="button" onclick="window.location='/regions/delete/' + getElementById('region').value">Удалить регион</button>
+        <!--<a href="/regions">Подробнее...</a> -->
+
     </p>
     <br><br>
 
-    <!-- Выпадающий список для данжей -->
+    <!-- Выбор данжа -->
     <p>
         <label for="dungeon">Выберите данж:</label>
         <select name="dungeon" id="dungeon">
@@ -28,12 +32,22 @@
                 <option value="${dungeon.id}">${dungeon.name}</option>
             </#list>
         </select>
-        <button type="button" onclick="window.location='/dungeons/new'">Добавить ещё данж</button>
-        <a href="/dungeons"> Подробнее...</a>
+        <button type="button" onclick="window.location='/dungeons/new'">Добавить данж</button>
+        <button type="button" onclick="window.location='/dungeons/edit/' + getElementById('dungeon').value">
+            Изменить данж
+        </button>
     </p>
-    <br><br>
 
-    <!-- Выпадающий список для персонажей -->
+<form action="/dungeons/${dungeon.id}" method="post">
+    <input type="submit" value="Удалить данж" />
+</form>
+
+<a href="/dungeons">Подробнее...</a>
+
+<br><br>
+
+<!-- Форма выбора персонажа -->
+<form action="/dungeon-runs" method="post">
     <p>
         <label for="character">Выберите персонажа:</label>
         <select name="character" id="character">
@@ -41,16 +55,25 @@
                 <option value="${character.id}">${character.name}</option>
             </#list>
         </select>
-        <button type="button" onclick="window.location='/characters/new'">Добавить ещё персонажа</button>
-        <a href="/characters"> Подробнее...</a>
-    </p>
-    <br><br>
+        <button type="button" onclick="window.location='/characters/new'">Добавить персонажа</button>
+        <button type="button" onclick="window.location='/characters/edit/' + document.getElementById('character').value">
+            Изменить персонажа
+        </button>
 
-    <!-- Кнопка "В данж" -->
-    <p>
-        <input type="submit" value="В данж!">
-        <a href="/dungeon-runs"> Подробнее...</a>
     </p>
 </form>
+
+
+
+<br><br>
+
+<!-- Кнопка "В данж" -->
+<form action="/dungeon-runs" method="post">
+    <p>
+        <input type="submit" value="В данж!">
+        <a href="/dungeon-runs">Подробнее...</a>
+    </p>
+</form>
+
 </body>
 </html>

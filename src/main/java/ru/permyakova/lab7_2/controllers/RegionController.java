@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.permyakova.lab7_2.models.Region;
 import ru.permyakova.lab7_2.services.RegionService;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -19,14 +18,13 @@ public class RegionController {
     @PostMapping("/new")
     public String createRegionForm(Region region) {
         regionService.saveRegion(region);
-        return "redirect:/regions";
+        return "redirect:/";
     }
 
     @GetMapping("/new")
     public String showCreateRegionForm() {
-        return "regions-new"; // Убедитесь, что у вас есть шаблон regions-new.ftlh
+        return "regions-new";
     }
-
 
     @PostMapping("/save")
     public String saveRegion(@ModelAttribute Region region) {
@@ -37,10 +35,6 @@ public class RegionController {
     @GetMapping("/edit/{id}")
     public String editRegionForm(@PathVariable Long id, Model model) {
         Optional<Region> optionalRegion = regionService.getRegionById(id);
-        if (optionalRegion.isEmpty()) {
-            model.addAttribute("error", "Region not found with id: " + id);
-            return "error"; // Убедитесь, что у вас есть шаблон error.ftlh
-        }
         model.addAttribute("region", optionalRegion.get());
         return "regions-edit";
     }
@@ -51,22 +45,18 @@ public class RegionController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid region Id: " + id));
         region.setName(name);
         regionService.saveRegion(region);
-        return "redirect:/regions"; // Перенаправление на список всех регионов
+        return "redirect:/";
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteRegion(@PathVariable Long id) {
         regionService.deleteRegion(id);
-        return "redirect:/regions";
+        return "redirect:/";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/delete/{id}")
     public String regionInfo(@PathVariable Long id, Model model) {
         Optional<Region> optionalRegion = regionService.getRegionById(id);
-        if (optionalRegion.isEmpty()) {
-            model.addAttribute("error", "Region not found with id: " + id);
-            return "error"; // Убедитесь, что у вас есть шаблон error.ftlh
-        }
         model.addAttribute("region", optionalRegion.get());
         return "regions-info";
     }

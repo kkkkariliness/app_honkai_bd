@@ -9,19 +9,30 @@ import java.time.LocalTime;
 @Table(name = "dungeon_run")
 @Data
 public class DungeonRun {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "d_id" )
+    @Column(name = "d_id")
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "d_dungeon_id", nullable = false)
     private Dungeon dungeon;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "d_character", nullable = false)
     private Character character;
 
     @Column(name = "d_time_score", nullable = false)
     private LocalTime timeScore;
+
+    @Override
+    public String toString() {
+        return "DungeonRun{" +
+                "id=" + id +
+                ", dungeonId=" + (dungeon != null ? dungeon.getId() : "null") +
+                ", characterId=" + (character != null ? character.getId() : "null") +
+                ", timeScore=" + timeScore +
+                '}';
+    }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.permyakova.lab7_2.models.Character;
 import ru.permyakova.lab7_2.services.CharacterService;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -25,16 +25,12 @@ public class CharacterController {
     @PostMapping("/save")
     public String saveCharacter(@ModelAttribute Character character) {
         characterService.addCharacter(character);
-        return "redirect:/characters";
+        return "redirect:/";
     }
 
     @GetMapping("/edit/{id}")
     public String editCharacterForm(@PathVariable UUID id, Model model) {
-        Character character = characterService.getAllCharacters()
-                .stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Несуществующий id: " + id));
+        Optional<Character> character = characterService.getCharacterById(id);
         model.addAttribute("character", character);
         return "characters-edit";
     }
@@ -42,29 +38,19 @@ public class CharacterController {
     @PostMapping("/update/{id}")
     public String updateCharacter(@PathVariable UUID id, @ModelAttribute Character characterDetails) {
         characterService.updateCharacter(id, characterDetails);
-        return "redirect:/characters";
+        return "redirect:/";
     }
-
 
     @PostMapping("/delete/{id}")
     public String deleteCharacter(@PathVariable UUID id) {
         characterService.deleteCharacter(id);
-        return "redirect:/characters";
+        return "redirect:/";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/delete/{id}")
     public String characterInfo(@PathVariable UUID id, Model model) {
-        Character character = characterService.getAllCharacters()
-                .stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Несуществующий id: " + id));
-
-        System.out.println("isAlive: " + character.isAlive()); // Проверка значения
+        Optional<Character> character = characterService.getCharacterById(id);
         model.addAttribute("character", character);
         return "characters-info";
     }
-
-
-
 }

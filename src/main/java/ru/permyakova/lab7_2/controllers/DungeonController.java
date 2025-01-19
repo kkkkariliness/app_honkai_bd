@@ -25,7 +25,7 @@ public class DungeonController {
     @PostMapping("/save")
     public String saveDungeon(@ModelAttribute Dungeon dungeon) {
         dungeonService.addDungeon(dungeon);
-        return "redirect:/dungeons";
+        return "redirect:/";
     }
 
     @PostMapping("/update/{id}")
@@ -40,7 +40,7 @@ public class DungeonController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid region Id: " + regionId)));
 
         dungeonService.updateDungeon(id, dungeon);
-        return "redirect:/dungeons";
+        return "redirect:/";
     }
 
 
@@ -54,22 +54,15 @@ public class DungeonController {
     }
 
 
-    @PostMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteDungeon(@PathVariable Long id) {
         dungeonService.deleteDungeon(id);
-        return "redirect:/dungeons";
+        return "redirect:/";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/delete/{id}")
     public String dungeonInfo(@PathVariable Long id, Model model) {
-        Dungeon dungeon = dungeonService.getDungeonById(id)
-                .orElse(null);
-
-        if (dungeon == null) {
-            model.addAttribute("error", "Dungeon not found with id: " + id);
-            return "error";
-        }
-
+        Dungeon dungeon = dungeonService.getDungeonById(id).orElse(null);
         model.addAttribute("dungeon", dungeon);
         return "dungeon-info";
     }

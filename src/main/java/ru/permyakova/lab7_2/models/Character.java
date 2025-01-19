@@ -11,9 +11,10 @@ import java.util.UUID;
 @Table(name = "character")
 @Data
 public class Character {
+
     @Id
     @GeneratedValue
-    @Column(name = "ch_id")
+    @Column(name = "ch_id", unique = true, nullable = false)
     private UUID id;
 
     @Column(name = "ch_name", nullable = false)
@@ -36,5 +37,18 @@ public class Character {
 
     @Column(name = "ch_money_donat", nullable = false)
     private BigDecimal moneyDonat;
-}
 
+    @Override
+    public String toString() {
+        return "Character{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", rarity=" + rarity +
+                ", way='" + way + '\'' +
+                ", typeOfBattle='" + typeOfBattle + '\'' +
+                ", dateOfMeet=" + dateOfMeet +
+                ", isAlive=" + isAlive +
+                ", moneyDonat=" + moneyDonat +
+                '}';
+    }
+}

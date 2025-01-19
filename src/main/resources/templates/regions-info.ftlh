@@ -20,13 +20,8 @@
 </#if>
 <hr>
 <!-- Кнопка для удаления региона -->
-<form action="/regions/${region.id}" method="post">
+<form action="/regions/delete/${region.id}" method="post">
     <input type="submit" value="Удалить регион"/>
-</form>
-
-<!-- Кнопка для изменения региона -->
-<form action="/regions/edit/${region.id}" method="get">
-    <button type="submit">Изменить регион</button>
 </form>
 </body>
 </html>
