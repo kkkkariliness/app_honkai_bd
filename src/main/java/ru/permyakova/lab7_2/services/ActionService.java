@@ -15,35 +15,38 @@ public class ActionService {
     private final PlatformTransactionManager transactionManager;
     private TransactionStatus transactionStatus;
 
+    // Создаем транзакцию, если текущая транзакция отсутствует или уже завершена
     public void saveCheckpoint() {
         if (transactionStatus == null || transactionStatus.isCompleted()) {
-            DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-            def.setName("SavepointTransaction");
+            DefaultTransactionDefinition def = new DefaultTransactionDefinition(); // Создание
+            def.setName("Transaction"); // Даем ей имя
             def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-            transactionStatus = transactionManager.getTransaction(def);
-            log.info("Checkpoint saved.");
+            transactionStatus = transactionManager.getTransaction(def); // Начинаем транзакцию
+            log.info("Точка сохранения установлена");
         } else {
-            log.warn("Checkpoint already exists. Skipping save.");
+            log.warn("Точка сохранения уже установлена. Пропускаем");
         }
     }
 
+    // Фиксируем текущую транзакцию
     public void commitCheckpoint() {
         if (transactionStatus != null && !transactionStatus.isCompleted()) {
             transactionManager.commit(transactionStatus);
             transactionStatus = null;
-            log.info("Checkpoint committed.");
+            log.info("Транзакция закоммичена");
         } else {
-            log.warn("No active checkpoint to commit.");
+            log.warn("Нет активной транзакции");
         }
     }
 
+    // Откатываем транзакцию на её начало
     public void performRollbackToLastCheckpoint() {
         if (transactionStatus != null && !transactionStatus.isCompleted()) {
             transactionManager.rollback(transactionStatus);
             transactionStatus = null;
-            log.info("Rolled back to last checkpoint.");
+            log.info("Откат на последнюю точку сохранения");
         } else {
-            log.warn("No active checkpoint to rollback to.");
+            log.warn("Нет точек сохранения");
         }
     }
 }

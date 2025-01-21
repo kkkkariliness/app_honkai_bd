@@ -35,8 +35,6 @@ public class DungeonRunController {
         Character selectedCharacter = characterService.getCharacterById(character)
                 .orElseThrow(() -> new IllegalArgumentException("Нет персонажа с ID: " + character));
 
-        log.info("Ты хотя бы тыкнула кнопку");
-
         dungeonRun.setDungeon(selectedDungeon);
         dungeonRun.setCharacter(selectedCharacter);
 
@@ -61,8 +59,8 @@ public class DungeonRunController {
 
     @PostMapping("/update")
     public String updateDungeonRun(
-            @RequestParam Long id,
-            @RequestParam Long dungeon,
+            @RequestParam long id,
+            @RequestParam long dungeon,
             @RequestParam UUID character) {
 
         DungeonRun dungeonRun = dungeonRunService.getDungeonRunById(id)

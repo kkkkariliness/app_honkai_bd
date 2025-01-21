@@ -56,7 +56,7 @@ public class RegionService {
         if (regionRepository.existsById(id)) {
             regionRepository.deleteById(id); // Каскадное удаление данжей
         } else {
-            log.warn("Attempted to delete non-existent region with id: " + id);
+            log.warn("Попытка удалить несуществующий регион с id: " + id);
         }
     }
 

@@ -2,6 +2,8 @@ package ru.permyakova.lab7_2.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +20,8 @@ public class Dungeon {
     @Column(name = "d_id")
     private Integer id;
 
+    @NotBlank(message = "Название данжа не может быть пустым")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$", message = "Название может содержать только буквы")
     @Column(name = "d_name", nullable = false)
     private String name;
 

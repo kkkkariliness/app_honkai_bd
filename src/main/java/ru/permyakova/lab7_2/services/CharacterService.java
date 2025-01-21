@@ -59,43 +59,46 @@ public class CharacterService {
     }
 
     /**
-     * Оживить всех персонажей, донаты на которых больше чем N (захардкодить N?)
-     * Если сумма донатов всех живых персонажей больше чем M (захардкодить? N << M )
+     * Оживить всех персонажей, донаты на которых больше чем N (захардкодить N)
+     * Если сумма донатов всех живых персонажей больше чем M (захардкодить, N << M )
      * то отменить действие и оживить одного случайного персонажа с донатом больше чем N
      * (выбор случайного персонажа сделать через LIMIT 1)
      */
 
     private static final BigDecimal N = BigDecimal.valueOf(1000);  // Минимальная сумма донатов
-    private static final BigDecimal M = BigDecimal.valueOf(5000); // Порог для отката
+    private static final BigDecimal M = BigDecimal.valueOf(50000); // Порог для отката
 
     public void reviveCharactersBasedOnDonations() {
         // Создаем чекпоинт
         actionService.saveCheckpoint();
         try {
 
-            // Оживить всех персонажей с донатами больше N
+            // Оживляем всех персонажей с донатами больше N
             List<Character> charactersToRevive = characterRepository.findAllByMoneyDonatGreaterThan(N);
             charactersToRevive.forEach(character -> character.setAlive(true));
             characterRepository.saveAll(charactersToRevive);
-            log.info("Revived {} characters with donations greater than {}", charactersToRevive.size(), N);
+            log.info("У персонажей {} сумма доната больше {}", charactersToRevive.size(), N);
 
-            // Проверить общую сумму донатов всех живых персонажей
+            // Общая сумма донатов
             BigDecimal totalDonations = characterRepository.sumDonationsOfAliveCharacters();
-            log.info("Total donations of alive characters: {}", totalDonations);
+            log.info("Итогова сумма донатов: {}", totalDonations);
 
-            // Если сумма донатов превышает M
-            if (totalDonations.compareTo(M) > 0) {
-                log.warn("Сумма донатов превышает M. Откат на точку сохранения...");
-                actionService.performRollbackToLastCheckpoint();
+            if (totalDonations != null) {
+                if (totalDonations.compareTo(M) > 0) { // Если сумма донатов превышает M
+                    log.warn("Сумма донатов превышает M. Откат на точку сохранения...");
+                    actionService.performRollbackToLastCheckpoint();
 
-                rollbackAndReviveRandomCharacter();
-            } else if (charactersToRevive.isEmpty()) {
-                log.warn("Донат ни на одного персонажа не превышает N. Откат на точку сохранения...");
-                actionService.performRollbackToLastCheckpoint();
-            }
-            else {
-                actionService.commitCheckpoint(); // Зафиксировать изменения, если всё в порядке
-            }
+                    // Оживляем только одного персонажа
+                    rollbackAndReviveRandomCharacter();
+                } else if (charactersToRevive.isEmpty()) {
+                    log.warn("Донат ни на одного персонажа не превышает N. Откат на точку сохранения...");
+                    actionService.performRollbackToLastCheckpoint();
+                }
+                else {
+                    actionService.commitCheckpoint(); // Коммитимся, если всё в порядке
+                }
+            } else log.warn("Ни один донат на персонажа не превысил N");
+
         } catch (Exception e) {
             log.error("Ошибка. Откат на точку сохранения", e);
             actionService.performRollbackToLastCheckpoint();

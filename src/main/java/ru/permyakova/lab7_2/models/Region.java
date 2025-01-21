@@ -2,6 +2,8 @@ package ru.permyakova.lab7_2.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,8 @@ public class Region {
     @Column(name = "reg_id")
     private Integer id;
 
+    @NotBlank(message = "Название региона не может быть пустым")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$", message = "Название региона может содержать только буквы")
     @Column(name = "reg_name", nullable = false)
     private String name;
 

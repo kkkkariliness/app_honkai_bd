@@ -1,6 +1,7 @@
 package ru.permyakova.lab7_2.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -23,6 +24,7 @@ public class DungeonRun {
     @JoinColumn(name = "d_character", nullable = false)
     private Character character;
 
+    @NotNull(message = "Время прохождения обязательно")
     @Column(name = "d_time_score", nullable = false)
     private LocalTime timeScore;
 
