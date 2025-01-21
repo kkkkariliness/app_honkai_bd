@@ -69,24 +69,6 @@
 
             }
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // updateDungeons(); // Обновление данжей при загрузке страницы
-            document.querySelector('form[action="/dungeon-runs"]').addEventListener('submit', function (event) {
-                const region = document.getElementById('region') instanceof HTMLSelectElement;
-                const dungeon = document.getElementById('dungeon') instanceof HTMLSelectElement;
-                const character = document.getElementById('character') instanceof HTMLSelectElement;
-
-                const r1 = region.value;
-                const d1 = dungeon.value;
-                const c1 = character.value;
-
-                if (!region || !dungeon || !character) {
-                    alert('Пожалуйста, выберите все параметры перед отправкой!');
-                    event.preventDefault(); // Отменяем отправку формы
-                }
-            })
-        });
     </script>
 
 
@@ -135,29 +117,67 @@
     <!-- Кнопка "В данж" -->
 
     <p>
-
         <input type="submit" value="В данж!">
         <a href="/dungeon-runs">Подробнее...</a>
+<#--        <input type="submit" value="Оживить персонажей!">-->
+        <!--<button type="button" onclick="window.location='/reviveCharacters'">Оживить персонажей!</button> -->
 
-          <!--  // Проверка заполненности формы перед отправкой
-            document.querySelector('form[action="/dungeon-runs"]').addEventListener('submit', function(event) {
-                const region = document.getElementById('region') instanceof HTMLSelectElement;
-                const dungeon = document.getElementById('dungeon') instanceof HTMLSelectElement;
-                const character = document.getElementById('character')instanceof HTMLSelectElement;
+        <!-- Кнопка "Оживить персонажей" -->
+        <button type="button" onclick="reviveCharacters()">Оживить персонажей!</button>
 
-                const region1 = region.value;
-                const dungeon1 = dungeon.value;
-                const character1 = character.value;
+        <script>
+            function reviveCharacters() {
+                fetch('/reviveCharacters', {
+                    method: 'POST',
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Ошибка при оживлении персонажей: ' + response.statusText);
+                        }
+                        return response.text();
+                    })
+                    .then(message => {
+                        alert(message); // Сообщение об успешной операции
+                        window.location.reload(); // Перезагрузка страницы
+                    })
+                    .catch(error => {
+                        alert('Ошибка: ' + error.message);
+                    });
+            }
+        </script>
 
-                if (!region1 || !dungeon1 || !character1) {
-                    alert('Пожалуйста, выберите все параметры перед отправкой!');
-                    event.preventDefault(); // Отменяем отправку формы
-                }
-            });
-        </script> -->
+
+        <script>
+     // Проверка заполненности формы перед отправкой
+     document.addEventListener('DOMContentLoaded', function () {
+         // Добавляем обработчик на событие отправки формы
+         document.querySelector('form[action="/dungeon-runs"]').addEventListener('submit', function (event) {
+             // Проверяем, что полученные элементы являются HTMLSelectElement
+             const region = document.getElementById('region');
+             const dungeon = document.getElementById('dungeon');
+             const character = document.getElementById('character');
+
+             // Убедимся, что элементы существуют и являются правильным типом
+             if (
+                 !(region instanceof HTMLSelectElement) ||
+                 !(dungeon instanceof HTMLSelectElement) ||
+                 !(character instanceof HTMLSelectElement)
+             ) {
+                 alert('Не удалось определить элементы формы. Попробуйте обновить страницу.');
+                 event.preventDefault(); // Отменяем отправку формы
+                 return;
+             }
+
+             // Проверяем, что значения элементов выбраны
+             if (!region.value || !dungeon.value || !character.value) {
+                 alert('Пожалуйста, выберите все параметры перед отправкой!');
+                 event.preventDefault(); // Отменяем отправку формы
+             }
+         });
+     });
+    </script>
     </p>
 </form>
 
-</body>
 </body>
 </html>

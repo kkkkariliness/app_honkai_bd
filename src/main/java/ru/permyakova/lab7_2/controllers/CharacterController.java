@@ -1,6 +1,7 @@
 package ru.permyakova.lab7_2.controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import ru.permyakova.lab7_2.services.CharacterService;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Controller
 @RequestMapping("/characters")
 @AllArgsConstructor
@@ -30,10 +32,17 @@ public class CharacterController {
 
     @GetMapping("/edit/{id}")
     public String editCharacterForm(@PathVariable UUID id, Model model) {
+        log.debug("Request to edit character with ID: {}", id);
         Optional<Character> character = characterService.getCharacterById(id);
-        model.addAttribute("character", character);
-        return "characters-edit";
+        if (character.isPresent()) {
+            model.addAttribute("character", character.get());
+            return "characters-edit";
+        } else {
+            log.warn("Character with ID {} not found", id);
+            return "error-page"; // Верните шаблон для ошибки
+        }
     }
+
 
     @PostMapping("/update/{id}")
     public String updateCharacter(@PathVariable UUID id, @ModelAttribute Character characterDetails) {
