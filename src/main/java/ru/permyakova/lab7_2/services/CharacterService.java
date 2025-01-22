@@ -58,15 +58,8 @@ public class CharacterService {
         characterRepository.deleteById(id);
     }
 
-    /**
-     * Оживить всех персонажей, донаты на которых больше чем N (захардкодить N)
-     * Если сумма донатов всех живых персонажей больше чем M (захардкодить, N << M )
-     * то отменить действие и оживить одного случайного персонажа с донатом больше чем N
-     * (выбор случайного персонажа сделать через LIMIT 1)
-     */
-
     private static final BigDecimal N = BigDecimal.valueOf(1000);  // Минимальная сумма донатов
-    private static final BigDecimal M = BigDecimal.valueOf(50000); // Порог для отката
+    private static final BigDecimal M = BigDecimal.valueOf(1000); // Порог для отката
 
     public void reviveCharactersBasedOnDonations() {
         // Создаем чекпоинт
