@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Сущность, представляющая персонажа в игре.
  * Хранит информацию о персонаже, такую как имя, редкость, путь, тип боя,
- * дату встречи, статус активности и сумму доната.
+ * дату встречи, жив ли персонаж по сюжету и сумму доната.
  */
 @Entity
 @Table(name = "character")
@@ -33,7 +33,8 @@ public class Character {
      */
     @NotBlank(message = "Имя персонажа не может быть пустым")
     @Size(max = 255, message = "Имя персонажа не может превышать 255 символов")
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$", message = "Имя персонажа может содержать только буквы и пробелы")
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$",
+            message = "Имя персонажа может содержать только буквы и пробелы")
     @Column(name = "ch_name", nullable = false)
     private String name;
 
@@ -48,22 +49,24 @@ public class Character {
     private Short rarity;
 
     /**
-     * Путь персонажа (например, класс или специализация).
+     * Путь персонажа (ПРИМ: Сохранение, Изобилие и т.д.).
      * Обязателен, длина до 50 символов, содержит только буквы и пробелы.
      */
     @NotBlank(message = "Путь персонажа обязателен")
     @Size(max = 50, message = "Путь персонажа не может превышать 50 символов")
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$", message = "Путь персонажа может содержать только буквы и пробелы")
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$",
+            message = "Путь персонажа может содержать только буквы и пробелы")
     @Column(name = "ch_way", nullable = false)
     private String way;
 
     /**
-     * Тип боя персонажа (например, ближний, дальний, поддержка).
+     * Тип боя персонажа (ПРИМ: Мнимый, Ледяной и т.д.).
      * Обязателен, длина до 50 символов, содержит только буквы и пробелы.
      */
     @NotBlank(message = "Тип боя обязателен")
     @Size(max = 50, message = "Тип боя не может превышать 50 символов")
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$", message = "Тип боя может содержать только буквы и пробелы")
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$",
+            message = "Тип боя может содержать только буквы и пробелы")
     @Column(name = "ch_type_of_battle", nullable = false)
     private String typeOfBattle;
 
@@ -76,17 +79,18 @@ public class Character {
     private LocalDate dateOfMeet;
 
     /**
-     * Статус активности персонажа (жив или нет).
+     * Жив ли персонаж по сюжету (да - нет).
      */
     @Column(name = "ch_is_alive")
     private boolean isAlive;
 
     /**
-     * Сумма доната, связанная с персонажем.
+     * Сумма, задоначенная на персонажа.
      * Должна быть неотрицательной.
      */
     @NotNull(message = "Сумма доната обязательна")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Сумма доната должна быть неотрицательной")
+    @DecimalMin(value = "0.0", inclusive = true,
+            message = "Сумма доната должна быть неотрицательной")
     @Column(name = "ch_money_donat", nullable = false)
     private BigDecimal moneyDonat;
 

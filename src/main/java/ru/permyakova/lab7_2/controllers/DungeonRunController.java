@@ -25,14 +25,15 @@ public class DungeonRunController {
     private final CharacterService characterService;
     private final RegionService regionService;
 
+    // TODO: Сохранить новую запись о прохождении данжа
     /**
-     * Сохраняет новую запись о прохождении подземелья.
-     * Получает ID подземелья и персонажа из параметров запроса,
+     * Сохраняет новую запись о прохождении данжа.
+     * Получает ID данжа и персонажа из параметров запроса,
      * создает объект DungeonRun, устанавливает случайное время прохождения и сохраняет его.
-     * @param dungeon ID выбранного подземелья.
+     * @param dungeon ID выбранного данжа.
      * @param character UUID выбранного персонажа.
-     * @return Перенаправление на страницу со списком прохождений подземелий.
-     * @throws IllegalArgumentException если подземелье или персонаж с указанными ID не найдены.
+     * @return Страница "dungeon-runs".
+     * @throws IllegalArgumentException если данжа или персонаж с указанными ID не найдены.
      */
     @PostMapping
     public String saveDungeonRun(@RequestParam Long dungeon, @RequestParam UUID character) {
@@ -54,13 +55,14 @@ public class DungeonRunController {
         return "redirect:/dungeon-runs";
     }
 
+    // TODO: Отобразить форму для редактирования существующего прохождения данжа
     /**
-     * Отображает форму для редактирования существующего прохождения подземелья.
-     * Загружает данные о прохождении, а также списки регионов, подземелий и персонажей для выбора.
-     * @param id ID прохождения подземелья для редактирования.
+     * Отображает форму для редактирования существующего прохождения данжа.
+     * Загружает данные о прохождении, а также списки регионов, данжей и персонажей для выбора.
+     * @param id ID прохождения данжа для редактирования.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления для редактирования прохождения подземелья.
-     * @throws IllegalArgumentException если прохождение подземелья с указанным ID не найдено.
+     * @return Страница "dungeonruns-edit".
+     * @throws IllegalArgumentException если прохождение данжа с указанным ID не найдено.
      */
     @GetMapping("/edit/{id}")
     public String editDungeonRunForm(@PathVariable long id, Model model) {
@@ -74,15 +76,17 @@ public class DungeonRunController {
         return "dungeonruns-edit";
     }
 
+    // TODO: Обновить информацию о существующем прохождении данжа
     /**
-     * Обновляет информацию о существующем прохождении подземелья.
-     * Получает ID прохождения, а также новые ID подземелья и персонажа из параметров запроса.
+     * Обновляет информацию о существующем прохождении данжа.
+     * Получает ID прохождения, а также новые ID данжа и персонажа из параметров запроса.
      * Обновляет данные о прохождении и сохраняет их.
-     * @param id ID прохождения подземелья, которое нужно обновить.
-     * @param dungeon ID нового подземелья для прохождения.
+     * @param id ID прохождения данжа, которое нужно обновить.
+     * @param dungeon ID нового данжа для прохождения.
      * @param character UUID нового персонажа для прохождения.
-     * @return Перенаправление на страницу со списком прохождений подземелий.
-     * @throws IllegalArgumentException если прохождение подземелья, подземелье или персонаж с указанными ID не найдены.
+     * @return Страница "dungeon-runs".
+     * @throws IllegalArgumentException если прохождение данжа,
+     * данж или персонаж с указанными ID не найдены.
      */
     @PostMapping("/update")
     public String updateDungeonRun(
@@ -102,17 +106,16 @@ public class DungeonRunController {
 
         dungeonRun.setTimeScore(dungeonRunService.generateRandomTime());
 
-        // Здесь возможно, нужно использовать dungeonRunService.updateDungeonRun(id, dungeonRun);
-        // вместо addDungeonRun, если updateDungeonRun существует и обрабатывает обновление
-        dungeonRunService.addDungeonRun(dungeonRun); // Предполагается, что addDungeonRun также может обновить существующий объект по ID
+        dungeonRunService.addDungeonRun(dungeonRun);
 
         return "redirect:/dungeon-runs";
     }
 
+    // TODO: Удалить прохождение данжа по его идентификатору
     /**
-     * Удаляет прохождение подземелья по его уникальному идентификатору.
-     * @param id ID прохождения подземелья для удаления.
-     * @return Перенаправление на страницу со списком прохождений подземелий.
+     * Удаляет прохождение данжа по его уникальному идентификатору.
+     * @param id ID прохождения данжа для удаления.
+     * @return Страница "dungeon-runs".
      */
     @PostMapping("/delete/{id}")
     public String deleteDungeonRun(@PathVariable long id) {

@@ -18,10 +18,11 @@ public class RegionController {
 
     private final RegionService regionService;
 
+    // TODO: Отобразить форму для создания нового региона
     /**
      * Отображает форму для создания нового региона.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления для создания региона.
+     * @return Страница "regions-new".
      */
     @GetMapping("/new")
     public String showCreateRegionForm(Model model) {
@@ -29,16 +30,20 @@ public class RegionController {
         return "regions-new";
     }
 
+    // TODO: Создать новый регион
     /**
      * Создает новый регион.
      * Обрабатывает данные формы, выполняет валидацию и сохраняет регион через RegionService.
      * @param region Объект региона, заполненный данными из формы.
      * @param bindingResult Результаты валидации объекта region.
      * @param model Модель для передачи данных в представление в случае ошибки валидации.
-     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки.
+     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки,
+     * иначе - обновление текущей страницы.
      */
     @PostMapping("/new")
-    public String createRegion(@Valid @ModelAttribute Region region, BindingResult bindingResult, Model model) {
+    public String createRegion(@Valid @ModelAttribute Region region,
+                               BindingResult bindingResult,
+                               Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "regions-new";
@@ -46,23 +51,27 @@ public class RegionController {
         try {
             regionService.saveRegion(region);
         } catch (Exception e) {
-            model.addAttribute("error", "Ошибка при создании региона: " + e.getMessage());
+            model.addAttribute("error",
+                    "Ошибка при создании региона: " + e.getMessage());
             return "error";
         }
         return "redirect:/";
     }
 
+    // TODO: Сохранить (добавить или обновить) регион
     /**
      * Сохраняет (добавляет или обновляет) регион.
-     * Этот метод может быть использован как для создания, так и для обновления региона,
-     * если поле ID в объекте `region` будет установлено.
+     * Этот метод может быть использован как для создания, так и для обновления региона.
      * @param region Объект региона для сохранения.
      * @param bindingResult Результаты валидации объекта region.
      * @param model Модель для передачи данных в представление в случае ошибки валидации.
-     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки.
+     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки,
+     * иначе - обновление текущей страницы.
      */
     @PostMapping("/save")
-    public String saveRegion(@Valid @ModelAttribute Region region, BindingResult bindingResult, Model model) {
+    public String saveRegion(@Valid @ModelAttribute Region region,
+                             BindingResult bindingResult,
+                             Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "regions-new";
@@ -70,29 +79,33 @@ public class RegionController {
         try {
             regionService.saveRegion(region);
         } catch (Exception e) {
-            model.addAttribute("error", "Ошибка при сохранении региона: " + e.getMessage());
+            model.addAttribute("error",
+                    "Ошибка при сохранении региона: " + e.getMessage());
             return "error";
         }
         return "redirect:/";
     }
 
+    // TODO: Отобразить форму для редактирования существующего региона
     /**
      * Отображает форму для редактирования существующего региона.
      * @param id Уникальный идентификатор региона для редактирования.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления для редактирования региона или страницу ошибки, если регион не найден.
+     * @return Страница "regions-edit" или страница ошибки, если регион не найден.
      */
     @GetMapping("/edit/{id}")
     public String editRegionForm(@PathVariable long id, Model model) {
         Optional<Region> optionalRegion = regionService.getRegionById(id);
         if (optionalRegion.isEmpty()) {
-            model.addAttribute("error", "Регион с ID " + id + " не найден.");
+            model.addAttribute("error",
+                    "Регион с ID " + id + " не найден.");
             return "error";
         }
         model.addAttribute("region", optionalRegion.get());
         return "regions-edit";
     }
 
+    // TODO: Обновить информацию о существующем регионе
     /**
      * Обновляет информацию о существующем регионе.
      * Обрабатывает данные формы, выполняет валидацию и обновляет регион через RegionService.
@@ -100,10 +113,14 @@ public class RegionController {
      * @param region Объект региона с обновленными данными из формы.
      * @param bindingResult Результаты валидации объекта region.
      * @param model Модель для передачи данных в представление в случае ошибки валидации.
-     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки.
+     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки,
+     * иначе - обновление текущей страницы.
      */
     @PostMapping("/update/{id}")
-    public String updateRegion(@PathVariable long id, @Valid @ModelAttribute Region region, BindingResult bindingResult, Model model) {
+    public String updateRegion(@PathVariable long id,
+                               @Valid @ModelAttribute Region region,
+                               BindingResult bindingResult,
+                               Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
             model.addAttribute("region", region);
@@ -111,16 +128,19 @@ public class RegionController {
         }
         try {
             Region existingRegion = regionService.getRegionById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Регион с ID " + id + " не найден"));
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Регион с ID " + id + " не найден"));
             existingRegion.setName(region.getName());
             regionService.saveRegion(existingRegion);
         } catch (Exception e) {
-            model.addAttribute("error", "Ошибка при обновлении региона: " + e.getMessage());
+            model.addAttribute("error",
+                    "Ошибка при обновлении региона: " + e.getMessage());
             return "error";
         }
         return "redirect:/";
     }
 
+    // TODO: Удалить регион по его уникальному идентификатору
     /**
      * Удаляет регион по его уникальному идентификатору.
      * @param id Уникальный идентификатор региона для удаления.
@@ -131,20 +151,23 @@ public class RegionController {
     public String deleteRegion(@PathVariable long id, Model model) {
         try {
             regionService.getRegionById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Регион с ID " + id + " не найден"));
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Регион с ID " + id + " не найден"));
             regionService.deleteRegion(id);
         } catch (Exception e) {
-            model.addAttribute("error", "Ошибка при удалении региона: " + e.getMessage());
+            model.addAttribute("error",
+                    "Ошибка при удалении региона: " + e.getMessage());
             return "error";
         }
         return "redirect:/";
     }
 
+    // TODO: Отобразить информацию о регионе по его уникальному идентификатору
     /**
      * Отображает информацию о регионе по его уникальному идентификатору.
      * @param id Уникальный идентификатор региона.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления с информацией о регионе или страницу ошибки, если регион не найден.
+     * @return Страница "regions-info" или страница ошибки, если регион не найден.
      */
     @GetMapping("/delete/{id}")
     public String regionInfo(@PathVariable long id, Model model) {

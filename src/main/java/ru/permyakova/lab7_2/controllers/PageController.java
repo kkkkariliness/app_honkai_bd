@@ -22,13 +22,13 @@ public class PageController {
     private final DungeonService dungeonService;
     private final CharacterService characterService;
     private final DungeonRunService dungeonRunService;
-    private final ActionService actionService;
 
+    // TODO: Отобразить стартовую страницу приложения
     /**
      * Отображает стартовую страницу приложения.
-     * Загружает и передает в модель списки всех регионов, подземелий и персонажей.
+     * Загружает и передает в модель списки всех регионов, данжей и персонажей.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления "start".
+     * @return Страница "start".
      */
     @GetMapping("/")
     public String showStartPage(Model model) {
@@ -38,11 +38,12 @@ public class PageController {
         return "start";
     }
 
+    // TODO: Отобразить страницу со списком всех прохождений данжей
     /**
-     * Отображает страницу со списком всех прохождений подземелий.
-     * Загружает и передает в модель список всех прохождений подземелий.
+     * Отображает страницу со списком всех прохождений данжей.
+     * Загружает и передает в модель список всех прохождений данжей.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления "dungeon-runs".
+     * @return Страница "dungeon-runs".
      */
     @GetMapping("/dungeon-runs")
     public String pageDungeonRuns(Model model) {
@@ -51,6 +52,7 @@ public class PageController {
         return "dungeon-runs";
     }
 
+    // TODO: Обработать запрос на оживление персонажей на основе донатов
     /**
      * Обрабатывает запрос на оживление персонажей на основе донатов.
      * Вызывает метод reviveCharactersBasedOnDonations из CharacterService.

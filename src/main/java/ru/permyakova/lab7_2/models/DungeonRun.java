@@ -1,14 +1,13 @@
 package ru.permyakova.lab7_2.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalTime;
 
 /**
- * Сущность, представляющая запись о прохождении подземелья.
- * Хранит информацию о том, какое подземелье было пройдено, каким персонажем,
+ * Сущность, представляющая запись о прохождении данжа.
+ * Хранит информацию о том, какой данж был пройден, каким персонажем,
  * и за какое время.
  */
 @Entity
@@ -17,7 +16,7 @@ import java.time.LocalTime;
 public class DungeonRun {
 
     /**
-     * Уникальный идентификатор записи о прохождении подземелья.
+     * Уникальный идентификатор записи о прохождении данжа.
      * Генерируется автоматически при создании.
      */
     @Id
@@ -26,7 +25,7 @@ public class DungeonRun {
     private Integer id;
 
     /**
-     * Подземелье, которое было пройдено.
+     * Данж, который было пройдено.
      * Это отношение "многие к одному" (ManyToOne) с сущностью Dungeon.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +33,7 @@ public class DungeonRun {
     private Dungeon dungeon;
 
     /**
-     * Персонаж, который прошел подземелье.
+     * Персонаж, который прошел данж.
      * Это отношение "многие к одному" (ManyToOne) с сущностью Character.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,16 +41,15 @@ public class DungeonRun {
     private Character character;
 
     /**
-     * Время, за которое было пройдено подземелье.
-     * Обязательно для заполнения.
+     * Время, за которое был пройден данж.
+     * Генерируется рандомно.
      */
-    @NotNull(message = "Время прохождения обязательно")
     @Column(name = "d_time_score", nullable = false)
     private LocalTime timeScore;
 
     /**
      * Возвращает строковое представление объекта DungeonRun.
-     * @return Строковое представление записи о прохождении подземелья.
+     * @return Строковое представление записи о прохождении данжа.
      */
     @Override
     public String toString() {

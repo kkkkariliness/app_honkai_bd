@@ -20,10 +20,11 @@ import java.util.UUID;
 public class CharacterController {
     private final CharacterService characterService;
 
+    // TODO: Отобразить форму для создания нового персонажа
     /**
      * Отображает форму для создания нового персонажа.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления для создания персонажа.
+     * @return Страница "characters-new".
      */
     @GetMapping("/new")
     public String createCharacterForm(Model model) {
@@ -31,6 +32,7 @@ public class CharacterController {
         return "characters-new";
     }
 
+    // TODO: Сохранить нового персонажа
     /**
      * Сохраняет нового персонажа, полученного из формы.
      * Обрабатывает данные формы, выполняет валидацию и сохраняет персонажа через CharacterService.
@@ -42,7 +44,8 @@ public class CharacterController {
     @PostMapping("/save")
     public String saveCharacter(@Valid @ModelAttribute Character character,
                                 BindingResult bindingResult,
-                                @RequestParam(name = "isAlive", required = false) String isAliveValue) {
+                                @RequestParam(name = "isAlive", required = false)
+                                    String isAliveValue) {
         character.setAlive(isAliveValue != null && isAliveValue.equals("true"));
 
         if (bindingResult.hasErrors()) {
@@ -58,11 +61,12 @@ public class CharacterController {
         }
     }
 
+    // TODO: Отобразить форму для редактирования существующего персонажа
     /**
      * Отображает форму для редактирования существующего персонажа.
      * @param id Уникальный идентификатор персонажа для редактирования.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления для редактирования персонажа или страницу ошибки, если персонаж не найден.
+     * @return Страница "characters-edit".
      */
     @GetMapping("/edit/{id}")
     public String editCharacterForm(@PathVariable UUID id, Model model) {
@@ -82,6 +86,7 @@ public class CharacterController {
         }
     }
 
+    // TODO: Обновить информацию о существующем персонаже
     /**
      * Обновляет информацию о существующем персонаже.
      * Обрабатывает данные формы, выполняет валидацию и обновляет персонажа через CharacterService.
@@ -95,12 +100,14 @@ public class CharacterController {
     public String updateCharacter(@PathVariable UUID id,
                                   @Valid @ModelAttribute("character") Character characterDetails,
                                   BindingResult bindingResult,
-                                  @RequestParam(name = "isAlive", required = false) String isAliveValue) {
+                                  @RequestParam(name = "isAlive", required = false)
+                                      String isAliveValue) {
 
         characterDetails.setAlive(isAliveValue != null && isAliveValue.equals("true"));
 
         if (bindingResult.hasErrors()) {
-            log.warn("Validation errors while updating character with ID {}: {}", id, bindingResult.getAllErrors());
+            log.warn("Validation errors while updating character with ID {}: {}",
+                    id, bindingResult.getAllErrors());
             characterDetails.setId(id);
             return "characters-edit";
         }
@@ -113,6 +120,7 @@ public class CharacterController {
         }
     }
 
+    // TODO: Удалить персонажа по его уникальному идентификатору
     /**
      * Удаляет персонажа по его уникальному идентификатору.
      * @param id Уникальный идентификатор персонажа для удаления.
@@ -129,11 +137,12 @@ public class CharacterController {
         }
     }
 
+    // TODO: Отобразить информацию о персонаже
     /**
      * Отображает информацию о персонаже по его уникальному идентификатору.
      * @param id Уникальный идентификатор персонажа.
      * @param model Модель для передачи данных в представление.
-     * @return Имя представления с информацией о персонаже или страницу ошибки, если персонаж не найден.
+     * @return Страница "characters-info".
      */
     @GetMapping("/delete/{id}")
     public String characterInfo(@PathVariable UUID id, Model model) {

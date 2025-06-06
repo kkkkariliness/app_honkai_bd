@@ -17,6 +17,7 @@ import java.util.Random;
 public class DungeonRunService {
     private final DungeonRunRepository dungeonRunRepository;
 
+    // TODO: Сгенерировать случайное время прохождения подземелья
     /**
      * Генерирует случайное время в пределах 1 часа.
      * @return Случайное время типа LocalTime.
@@ -29,6 +30,7 @@ public class DungeonRunService {
         return LocalTime.of(hours, minutes, seconds);
     }
 
+    // TODO: Получить список всех прохождений подземелий
     /**
      * Получает список всех прохождений подземелий, отсортированных по ID.
      * @return Список всех объектов DungeonRun.
@@ -38,6 +40,7 @@ public class DungeonRunService {
         return dungeonRunRepository.findAll(Sort.by("id"));
     }
 
+    // TODO: Получить прохождение подземелья по его уникальному идентификатору
     /**
      * Получает прохождение подземелья по его уникальному идентификатору.
      * @param id Уникальный идентификатор прохождения подземелья.
@@ -48,6 +51,7 @@ public class DungeonRunService {
         return dungeonRunRepository.findById(id);
     }
 
+    // TODO: Добавить новое прохождение подземелья
     /**
      * Добавляет новое прохождение подземелья в базу данных.
      * @param dungeonRun Объект DungeonRun для добавления.
@@ -57,6 +61,7 @@ public class DungeonRunService {
         dungeonRunRepository.save(dungeonRun);
     }
 
+    // TODO: Обновить информацию о существующем прохождении подземелья
     /**
      * Обновляет информацию о существующем прохождении подземелья.
      * @param id Уникальный идентификатор прохождения подземелья, которое нужно обновить.
@@ -72,6 +77,7 @@ public class DungeonRunService {
         dungeonRunRepository.save(dungeonRun);
     }
 
+    // TODO: Удалить прохождение подземелья по его уникальному идентификатору
     /**
      * Удаляет прохождение подземелья из базы данных по его уникальному идентификатору.
      * @param id Уникальный идентификатор прохождения подземелья, которое нужно удалить.

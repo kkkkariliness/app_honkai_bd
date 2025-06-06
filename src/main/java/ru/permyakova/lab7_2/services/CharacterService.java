@@ -21,6 +21,7 @@ public class CharacterService {
     private final CharacterRepository characterRepository;
     private final ActionService actionService;
 
+    // TODO: Получить список всех персонажей, отсортированных по имени
     /**
      * Получает список всех персонажей, отсортированных по имени.
      * @return Список всех персонажей.
@@ -31,6 +32,7 @@ public class CharacterService {
         return characters;
     }
 
+    // TODO: Получить персонажа по его уникальному идентификатору
     /**
      * Получает персонажа по его уникальному идентификатору.
      * @param id Уникальный идентификатор персонажа.
@@ -41,6 +43,7 @@ public class CharacterService {
         return characterRepository.findById(id);
     }
 
+    // TODO: Добавить нового персонажа в базу данных
     /**
      * Добавляет нового персонажа в базу данных.
      * @param character Объект персонажа для добавления.
@@ -50,6 +53,7 @@ public class CharacterService {
         characterRepository.save(character);
     }
 
+    // TODO: Обновить информацию о существующем персонаже
     /**
      * Обновляет информацию о существующем персонаже.
      * @param id Уникальный идентификатор персонажа, который нужно обновить.
@@ -70,6 +74,7 @@ public class CharacterService {
         characterRepository.save(character);
     }
 
+    // TODO: Удалить персонажа из базы данных по его уникальному идентификатору
     /**
      * Удаляет персонажа из базы данных по его уникальному идентификатору.
      * @param id Уникальный идентификатор персонажа, который нужно удалить.
@@ -79,9 +84,10 @@ public class CharacterService {
         characterRepository.deleteById(id);
     }
 
-    private static final BigDecimal N = BigDecimal.valueOf(500);  // Минимальная сумма донатов
-    private static final BigDecimal M = BigDecimal.valueOf(100000); // Порог для отката
+    private static final BigDecimal N = BigDecimal.valueOf(500);
+    private static final BigDecimal M = BigDecimal.valueOf(100000);
 
+    // TODO: Оживить персонажей на основе их донатов
     /**
      * Оживляет персонажей на основе их донатов.
      * Создает чекпоинт, оживляет персонажей, чьи донаты превышают N.
@@ -92,33 +98,30 @@ public class CharacterService {
      * @throws Exception в случае возникновения непредвиденной ошибки.
      */
     public void reviveCharactersBasedOnDonations() {
-        // Создаем чекпоинт
         actionService.saveCheckpoint();
         try {
-
-            // Оживляем всех персонажей с донатами больше N
-            List<Character> charactersToRevive = characterRepository.findAllByMoneyDonatGreaterThan(N);
+            List<Character> charactersToRevive = characterRepository
+                    .findAllByMoneyDonatGreaterThan(N);
             charactersToRevive.forEach(character -> character.setAlive(true));
             characterRepository.saveAll(charactersToRevive);
             log.info("У персонажей {} сумма доната больше {}", charactersToRevive.size(), N);
 
-            // Общая сумма донатов
             BigDecimal totalDonations = characterRepository.sumDonationsOfAliveCharacters();
             log.info("Итогова сумма донатов: {}", totalDonations);
 
             if (totalDonations != null) {
-                if (totalDonations.compareTo(M) > 0) { // Если сумма донатов превышает M
+                if (totalDonations.compareTo(M) > 0) {
                     log.warn("Сумма донатов превышает M. Откат на точку сохранения...");
                     actionService.performRollbackToLastCheckpoint();
 
-                    // Оживляем только одного персонажа
                     rollbackAndReviveRandomCharacter();
                 } else if (charactersToRevive.isEmpty()) {
-                    log.warn("Донат ни на одного персонажа не превышает N. Откат на точку сохранения...");
+                    log.warn("Донат ни на одного персонажа не превышает N. " +
+                            "Откат на точку сохранения...");
                     actionService.performRollbackToLastCheckpoint();
                 }
                 else {
-                    actionService.commitCheckpoint(); // Коммитимся, если всё в порядке
+                    actionService.commitCheckpoint();
                 }
             } else log.warn("Ни один донат на персонажа не превысил N");
 
@@ -129,6 +132,7 @@ public class CharacterService {
         }
     }
 
+    // TODO: Откатить текущую транзакцию и оживить одного случайного персонажа
     /**
      * Откатывает текущую транзакцию и оживляет одного случайного персонажа,
      * у которого сумма донатов превышает N.
@@ -137,7 +141,8 @@ public class CharacterService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void rollbackAndReviveRandomCharacter() {
 
-        Optional<Character> randomCharacterOpt = characterRepository.findRandomCharacterByMoneyDonatGreaterThan(N);
+        Optional<Character> randomCharacterOpt =
+                characterRepository.findRandomCharacterByMoneyDonatGreaterThan(N);
         if (randomCharacterOpt.isPresent()) {
             Character randomCharacter = randomCharacterOpt.get();
             randomCharacter.setAlive(true);

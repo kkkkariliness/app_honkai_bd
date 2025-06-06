@@ -3,7 +3,6 @@ package ru.permyakova.lab7_2.models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.List;
 /**
  * Сущность, представляющая регион в игре.
  * Хранит информацию о регионе, такую как его уникальный идентификатор и название.
- * Также управляет списком подземелий, расположенных в этом регионе.
+ * Также управляет списком данжей, расположенных в этом регионе.
  */
 @Entity
 @Table(name = "region")
@@ -35,17 +34,19 @@ public class Region {
 
     /**
      * Название региона.
-     * Не может быть пустым и может содержать только буквы.
+     * Не может быть пустым.
      */
     @NotBlank(message = "Название региона не может быть пустым")
     @Column(name = "reg_name", nullable = false)
     private String name;
 
     /**
-     * Список подземелий, принадлежащих этому региону.
+     * Список данжей, принадлежащих этому региону.
      * Это отношение "один ко многим" (OneToMany) с сущностью Dungeon.
-     * При удалении региона, связанные подземелья также будут удалены (cascade = CascadeType.ALL, orphanRemoval = true).
-     * {@link JsonManagedReference} используется для управления сериализацией JSON и предотвращения зацикливания.
+     * При удалении региона, связанные данжи также будут удалены
+     * (cascade = CascadeType.ALL, orphanRemoval = true).
+     * {@link JsonManagedReference} используется для управления
+     * сериализацией JSON и предотвращения зацикливания.
      */
     @OneToMany(mappedBy = "region", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -64,8 +65,8 @@ public class Region {
     }
 
     /**
-     * Возвращает список подземелий, связанных с этим регионом.
-     * Если список подземелий равен null, возвращает пустой неизменяемый список.
+     * Возвращает список данжей, связанных с этим регионом.
+     * Если список данжей равен null, возвращает пустой неизменяемый список.
      * @return Список объектов Dungeon.
      */
     public List<Dungeon> getDungeons() {
