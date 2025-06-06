@@ -9,7 +9,7 @@
     <label for="name">Новое имя данжа:</label>
     <input type="text" id="name" name="name" value="${dungeon.name}" required/>
     <br><br>
-    <label for="region">Регион:</label>
+    <label for="region">Новый регион:</label>
     <select id="region" name="regionId" required>
         <#if regions?? && (regions?size > 0)>
             <#list regions as region>

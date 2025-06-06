@@ -21,24 +21,41 @@ public class CharacterService {
     private final CharacterRepository characterRepository;
     private final ActionService actionService;
 
-
+    /**
+     * Получает список всех персонажей, отсортированных по имени.
+     * @return Список всех персонажей.
+     */
     @Transactional(readOnly = true)
     public List<Character> getAllCharacters() {
         List<Character> characters = characterRepository.findAll(Sort.by("name"));
         return characters;
     }
 
+    /**
+     * Получает персонажа по его уникальному идентификатору.
+     * @param id Уникальный идентификатор персонажа.
+     * @return Optional, содержащий персонажа, если он найден, иначе пустой Optional.
+     */
     @Transactional(readOnly = true)
     public Optional<Character> getCharacterById(UUID id) {
         return characterRepository.findById(id);
     }
 
-
+    /**
+     * Добавляет нового персонажа в базу данных.
+     * @param character Объект персонажа для добавления.
+     */
     @Transactional
     public void addCharacter(Character character) {
         characterRepository.save(character);
     }
 
+    /**
+     * Обновляет информацию о существующем персонаже.
+     * @param id Уникальный идентификатор персонажа, который нужно обновить.
+     * @param characterDetails Объект персонажа с обновленными данными.
+     * @throws IllegalArgumentException если персонаж с указанным Id не найден.
+     */
     @Transactional
     public void updateCharacter(UUID id, Character characterDetails) {
         Character character = characterRepository.findById(id)
@@ -53,14 +70,27 @@ public class CharacterService {
         characterRepository.save(character);
     }
 
+    /**
+     * Удаляет персонажа из базы данных по его уникальному идентификатору.
+     * @param id Уникальный идентификатор персонажа, который нужно удалить.
+     */
     @Transactional
     public void deleteCharacter(UUID id) {
         characterRepository.deleteById(id);
     }
 
-    private static final BigDecimal N = BigDecimal.valueOf(1000);  // Минимальная сумма донатов
-    private static final BigDecimal M = BigDecimal.valueOf(1000); // Порог для отката
+    private static final BigDecimal N = BigDecimal.valueOf(500);  // Минимальная сумма донатов
+    private static final BigDecimal M = BigDecimal.valueOf(100000); // Порог для отката
 
+    /**
+     * Оживляет персонажей на основе их донатов.
+     * Создает чекпоинт, оживляет персонажей, чьи донаты превышают N.
+     * Если общая сумма донатов живых персонажей превышает M,
+     * происходит откат до чекпоинта и оживляется один случайный персонаж.
+     * Если донаты ни на одного персонажа не превышают N, происходит откат.
+     * В случае ошибки также происходит откат.
+     * @throws Exception в случае возникновения непредвиденной ошибки.
+     */
     public void reviveCharactersBasedOnDonations() {
         // Создаем чекпоинт
         actionService.saveCheckpoint();
@@ -99,6 +129,11 @@ public class CharacterService {
         }
     }
 
+    /**
+     * Откатывает текущую транзакцию и оживляет одного случайного персонажа,
+     * у которого сумма донатов превышает N.
+     * Эта операция выполняется в новой транзакции (Propagation.REQUIRES_NEW).
+     */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void rollbackAndReviveRandomCharacter() {
 

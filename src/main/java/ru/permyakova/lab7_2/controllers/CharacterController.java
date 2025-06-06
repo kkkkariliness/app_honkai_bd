@@ -1,5 +1,6 @@
 package ru.permyakova.lab7_2.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.permyakova.lab7_2.models.Character;
 import ru.permyakova.lab7_2.services.CharacterService;
 
-import jakarta.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,14 +20,31 @@ import java.util.UUID;
 public class CharacterController {
     private final CharacterService characterService;
 
+    /**
+     * Отображает форму для создания нового персонажа.
+     * @param model Модель для передачи данных в представление.
+     * @return Имя представления для создания персонажа.
+     */
     @GetMapping("/new")
     public String createCharacterForm(Model model) {
         model.addAttribute("character", new Character());
         return "characters-new";
     }
 
+    /**
+     * Сохраняет нового персонажа, полученного из формы.
+     * Обрабатывает данные формы, выполняет валидацию и сохраняет персонажа через CharacterService.
+     * @param character Объект персонажа, заполненный данными из формы.
+     * @param bindingResult Результаты валидации объекта character.
+     * @param isAliveValue Значение чекбокса "isAlive" из формы.
+     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки.
+     */
     @PostMapping("/save")
-    public String saveCharacter(@Valid @ModelAttribute Character character, BindingResult bindingResult, Model model) {
+    public String saveCharacter(@Valid @ModelAttribute Character character,
+                                BindingResult bindingResult,
+                                @RequestParam(name = "isAlive", required = false) String isAliveValue) {
+        character.setAlive(isAliveValue != null && isAliveValue.equals("true"));
+
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors while saving character: {}", bindingResult.getAllErrors());
             return "characters-new";
@@ -41,6 +58,12 @@ public class CharacterController {
         }
     }
 
+    /**
+     * Отображает форму для редактирования существующего персонажа.
+     * @param id Уникальный идентификатор персонажа для редактирования.
+     * @param model Модель для передачи данных в представление.
+     * @return Имя представления для редактирования персонажа или страницу ошибки, если персонаж не найден.
+     */
     @GetMapping("/edit/{id}")
     public String editCharacterForm(@PathVariable UUID id, Model model) {
         try {
@@ -59,14 +82,26 @@ public class CharacterController {
         }
     }
 
+    /**
+     * Обновляет информацию о существующем персонаже.
+     * Обрабатывает данные формы, выполняет валидацию и обновляет персонажа через CharacterService.
+     * @param id Уникальный идентификатор персонажа, который нужно обновить.
+     * @param characterDetails Объект персонажа с обновленными данными из формы.
+     * @param bindingResult Результаты валидации объекта characterDetails.
+     * @param isAliveValue Значение чекбокса "isAlive" из формы.
+     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки.
+     */
     @PostMapping("/update/{id}")
     public String updateCharacter(@PathVariable UUID id,
-                                  @Valid @ModelAttribute Character characterDetails,
+                                  @Valid @ModelAttribute("character") Character characterDetails,
                                   BindingResult bindingResult,
-                                  Model model) {
+                                  @RequestParam(name = "isAlive", required = false) String isAliveValue) {
+
+        characterDetails.setAlive(isAliveValue != null && isAliveValue.equals("true"));
+
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors while updating character with ID {}: {}", id, bindingResult.getAllErrors());
-            model.addAttribute("character", characterDetails);
+            characterDetails.setId(id);
             return "characters-edit";
         }
         try {
@@ -78,6 +113,11 @@ public class CharacterController {
         }
     }
 
+    /**
+     * Удаляет персонажа по его уникальному идентификатору.
+     * @param id Уникальный идентификатор персонажа для удаления.
+     * @return Перенаправление на главную страницу в случае успеха или страницу ошибки.
+     */
     @PostMapping("/delete/{id}")
     public String deleteCharacter(@PathVariable UUID id) {
         try {
@@ -89,6 +129,12 @@ public class CharacterController {
         }
     }
 
+    /**
+     * Отображает информацию о персонаже по его уникальному идентификатору.
+     * @param id Уникальный идентификатор персонажа.
+     * @param model Модель для передачи данных в представление.
+     * @return Имя представления с информацией о персонаже или страницу ошибки, если персонаж не найден.
+     */
     @GetMapping("/delete/{id}")
     public String characterInfo(@PathVariable UUID id, Model model) {
         try {

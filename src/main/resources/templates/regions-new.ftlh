@@ -8,7 +8,7 @@
 <form action="/regions/new" method="post">
     Название региона: <input type="text" name="name"/><br><br>
     <input type="submit" value="Добавить регион"/>
-    <a href="/regions">
+    <a href="/">
         <button type="button">Отмена</button>
     </a>
 </form>

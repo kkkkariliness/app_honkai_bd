@@ -15,7 +15,10 @@ public class ActionService {
     private final PlatformTransactionManager transactionManager;
     private TransactionStatus transactionStatus;
 
-    // Создаем транзакцию, если текущая транзакция отсутствует или уже завершена
+    /**
+     * Создает новую транзакцию (чекпоинт), если текущая транзакция отсутствует или уже завершена.
+     * Если активная транзакция уже существует, создание новой пропускается.
+     */
     public void saveCheckpoint() {
         if (transactionStatus == null || transactionStatus.isCompleted()) {
             DefaultTransactionDefinition def = new DefaultTransactionDefinition(); // Создание
@@ -28,7 +31,10 @@ public class ActionService {
         }
     }
 
-    // Фиксируем текущую транзакцию
+    /**
+     * Фиксирует (коммитит) текущую активную транзакцию.
+     * Если нет активной транзакции, выводится предупреждение.
+     */
     public void commitCheckpoint() {
         if (transactionStatus != null && !transactionStatus.isCompleted()) {
             transactionManager.commit(transactionStatus);
@@ -39,7 +45,10 @@ public class ActionService {
         }
     }
 
-    // Откатываем транзакцию на её начало
+    /**
+     * Откатывает текущую активную транзакцию к ее начальному состоянию.
+     * Если нет активной транзакции, выводится предупреждение.
+     */
     public void performRollbackToLastCheckpoint() {
         if (transactionStatus != null && !transactionStatus.isCompleted()) {
             transactionManager.rollback(transactionStatus);

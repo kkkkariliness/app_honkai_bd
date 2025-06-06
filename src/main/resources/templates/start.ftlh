@@ -119,10 +119,8 @@
     <p>
         <input type="submit" value="В данж!">
         <a href="/dungeon-runs">Подробнее...</a>
-<#--        <input type="submit" value="Оживить персонажей!">-->
-        <!--<button type="button" onclick="window.location='/reviveCharacters'">Оживить персонажей!</button> -->
 
-        <!-- Кнопка "Оживить персонажей" -->
+       <!-- Кнопка "Оживить персонажей" -->
         <button type="button" onclick="reviveCharacters()">Оживить персонажей!</button>
 
         <script>
@@ -148,34 +146,37 @@
 
 
         <script>
-     // Проверка заполненности формы перед отправкой
-     document.addEventListener('DOMContentLoaded', function () {
-         // Добавляем обработчик на событие отправки формы
-         document.querySelector('form[action="/dungeon-runs"]').addEventListener('submit', function (event) {
-             // Проверяем, что полученные элементы являются HTMLSelectElement
-             const region = document.getElementById('region');
-             const dungeon = document.getElementById('dungeon');
-             const character = document.getElementById('character');
+             // Проверка заполненности формы перед отправкой
+             document.addEventListener('DOMContentLoaded', function () {
+                 //Обновляем список данжей
+                 updateDungeons();
+                 // Добавляем обработчик на событие отправки формы
+                 document.querySelector('form[action="/dungeon-runs"]')
+                     .addEventListener('submit', function (event) {
+                     // Проверяем, что полученные элементы являются HTMLSelectElement
+                     const region = document.getElementById('region');
+                     const dungeon = document.getElementById('dungeon');
+                     const character = document.getElementById('character');
 
-             // Убедимся, что элементы существуют и являются правильным типом
-             if (
-                 !(region instanceof HTMLSelectElement) ||
-                 !(dungeon instanceof HTMLSelectElement) ||
-                 !(character instanceof HTMLSelectElement)
-             ) {
-                 alert('Не удалось определить элементы формы. Попробуйте обновить страницу.');
-                 event.preventDefault(); // Отменяем отправку формы
-                 return;
-             }
+                     // Убедимся, что элементы существуют и являются правильным типом
+                     if (
+                         !(region instanceof HTMLSelectElement) ||
+                         !(dungeon instanceof HTMLSelectElement) ||
+                         !(character instanceof HTMLSelectElement)
+                     ) {
+                         alert('Не удалось определить элементы формы. Попробуйте обновить страницу.');
+                         event.preventDefault(); // Отменяем отправку формы
+                         return;
+                     }
 
-             // Проверяем, что значения элементов выбраны
-             if (!region.value || !dungeon.value || !character.value) {
-                 alert('Пожалуйста, выберите все параметры перед отправкой!');
-                 event.preventDefault(); // Отменяем отправку формы
-             }
-         });
-     });
-    </script>
+                     // Проверяем, что значения элементов выбраны
+                     if (!region.value || !dungeon.value || !character.value) {
+                         alert('Пожалуйста, выберите все параметры перед отправкой!');
+                         event.preventDefault(); // Отменяем отправку формы
+                     }
+                 });
+             });
+        </script>
     </p>
 </form>
 

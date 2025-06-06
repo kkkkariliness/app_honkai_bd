@@ -11,6 +11,9 @@
 <hr>
 <form action="/dungeons/delete/${dungeon.id}" method="post">
     <button type="submit">Удалить данж</button>
+    <a href="/">
+        <button type="button">Отмена</button>
+    </a>
 </form>
 </body>
 </html>

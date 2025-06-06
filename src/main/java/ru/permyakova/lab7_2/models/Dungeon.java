@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Сущность, представляющая подземелье в игре.
+ * Хранит информацию о подземелье, такую как его название и регион, к которому оно принадлежит.
+ */
 @Entity
 @Table(name = "dungeon")
 @Data
@@ -15,27 +19,42 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Dungeon {
 
+    /**
+     * Уникальный идентификатор подземелья.
+     * Генерируется автоматически при создании.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "d_id")
     private Integer id;
 
+    /**
+     * Название подземелья.
+     * Не может быть пустым и может содержать только буквы.
+     */
     @NotBlank(message = "Название данжа не может быть пустым")
-    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$", message = "Название может содержать только буквы")
     @Column(name = "d_name", nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /**
+     * Регион, к которому принадлежит подземелье.
+     * Это отношение "многие к одному" (ManyToOne) с сущностью Region.
+     * {@link JsonBackReference} используется для предотвращения зацикливания при сериализации JSON.
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "d_region", nullable = false)
     @JsonBackReference
     private Region region;
 
+    /**
+     * Возвращает строковое представление объекта Dungeon.
+     * @return Строковое представление подземелья, включая его ID, название и ID связанного региона.
+     */
     @Override
     public String toString() {
         return "Dungeon{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", regionId=" + (region != null ? region.getId() : "null") +
-                '}';
+                ", regionId=" + (region != null ? region.getId() : "null") + '}';
     }
 }

@@ -22,6 +22,9 @@
 <!-- Кнопка для удаления региона -->
 <form action="/regions/delete/${region.id}" method="post">
     <input type="submit" value="Удалить регион"/>
+    <a href="/">
+        <button type="button">Отмена</button>
+    </a>
 </form>
 </body>
 </html>

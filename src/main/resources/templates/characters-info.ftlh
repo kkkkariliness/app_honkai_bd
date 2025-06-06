@@ -12,7 +12,7 @@
 <b>Тип боя: </b>${character.typeOfBattle}<br>
 <b>Дата встречи: </b>${character.dateOfMeet}<br>
 <b>Жив по сюжету игры: </b>
-<#if character.isAlive?? && character.isAlive()>
+<#if character.isAlive()>
     Да
 <#else>
     Нет
@@ -22,6 +22,9 @@
 <hr>
 <form action="/characters/delete/${character.id}" method="post">
     <button type="submit">Удалить персонажа</button>
+    <a href="/">
+        <button type="button">Отмена</button>
+    </a>
 </form>
 </body>
 </html>

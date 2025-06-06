@@ -27,7 +27,7 @@
     <br><br>
 
     <label for="isAlive">Жив по сюжету?:</label>
-    <input type="checkbox" id="isAlive" name="isAlive" <#if character.isAlive()>checked</#if>/>
+    <input type="checkbox" id="isAlive" name="isAlive" value="true" <#if character.alive>checked</#if>/>
     <br><br>
 
     <label for="moneyDonat">Задоначено денег для получения:</label>

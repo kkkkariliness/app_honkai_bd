@@ -21,7 +21,7 @@
     </select>
     <br><br>
     <button type="submit">Сохранить</button>
-    <a href="/dungeons">
+    <a href="/">
         <button type="button">Отмена</button>
     </a>
 </form>

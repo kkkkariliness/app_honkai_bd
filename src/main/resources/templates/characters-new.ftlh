@@ -27,15 +27,15 @@
     <br><br>
 
     <label for="isAlive">Жив по сюжету игры:</label>
-    <input type="checkbox" id="isAlive" name="isAlive">
+    <input type="checkbox" id="isAlive" name="isAlive" <#if (character.alive)?? && character.alive>checked</#if>>
     <br><br>
 
     <label for="moneyDonat">Задоначено денег для получения:</label>
-    <input type="number" id="moneyDonat" name="moneyDonat" step="0.01" required>
+    <input type="number" id="moneyDonat" name="moneyDonat" step="0.01"  required>
     <br><br>
 
     <button type="submit">Сохранить</button>
-    <a href="/characters">
+    <a href="/">
         <button type="button">Отмена</button>
     </a>
 </form>

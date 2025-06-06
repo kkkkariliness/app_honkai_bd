@@ -11,59 +11,73 @@
     <input type="hidden" name="id" value="${dungeonRun.id}">
 
     <script>
-        // Функция для обновления списка данжей
-        function updateDungeons() {
-            const dungeonSelect = document.getElementById('dungeon'); // Элемент для данжей
-            const regionSelect = document.getElementById('region');  // Элемент для регионов
-            const saveButton = document.querySelector('button[type="submit"]'); // Кнопка "Сохранить"
+        // Шаг 1: Получаем из модели ID данжа, который должен быть выбран при загрузке.
+        // Это значение устанавливается сервером (FreeMarker).
+        const initialDungeonId = "${dungeonRun.dungeon.id}";
 
-            // Проверяем, что элементы найдены
+        // Шаг 2: Модифицированная функция для обновления списка данжей
+        // Она теперь принимает необязательный параметр `dungeonToSelectId`
+        function updateDungeons(dungeonToSelectId) {
+            const dungeonSelect = document.getElementById('dungeon');
+            const regionSelect = document.getElementById('region');
+            const saveButton = document.querySelector('button[type="submit"]');
+
             if (!(regionSelect && dungeonSelect && saveButton)) {
                 console.error('Не найден элемент region, dungeon или кнопка "Сохранить"!');
                 return;
             }
 
-            if (regionSelect instanceof HTMLSelectElement) {
-                const regionId = regionSelect.value; // Получаем значение региона
+            const regionId = regionSelect.value;
+            if (!regionId) return; // Если регион не выбран, ничего не делаем
 
-                // Выполняем запрос к серверу
-                fetch(`/dungeons/by-region/` + regionId)
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error('Ошибка при получении списка данжей: ' + response.statusText);
-                        }
-                        return response.json(); // Парсим JSON
-                    })
-                    .then((dungeons) => {
-                        dungeonSelect.innerHTML = ''; // Очищаем выпадающий список
+            fetch(`/dungeons/by-region/` + regionId)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при получении списка данжей: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then((dungeons) => {
+                    dungeonSelect.innerHTML = ''; // Очищаем старый список
 
-                        // Если список данжей пуст, отображаем "Данжей не найдено" и скрываем кнопку "Сохранить"
-                        if (dungeons.length === 0) {
+                    if (dungeons.length === 0) {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'Данжей не найдено';
+                        dungeonSelect.appendChild(option);
+                        saveButton.style.display = 'none'; // Скрываем кнопку, если нет данжей
+                    } else {
+                        dungeons.forEach((dungeon) => {
                             const option = document.createElement('option');
-                            option.value = '';
-                            option.textContent = 'Данжей не найдено';
+                            option.value = dungeon.id;
+                            option.textContent = dungeon.name;
+
+                            // ВАЖНО: Выбираем нужный данж в списке
+                            // Сравниваем ID как строки, чтобы избежать проблем с типами
+                            if (dungeonToSelectId && String(dungeon.id) === String(dungeonToSelectId)) {
+                                option.selected = true;
+                            }
+
                             dungeonSelect.appendChild(option);
-
-                            // Скрываем кнопку "Сохранить"
-                            saveButton.style.display = 'none';
-                        } else {
-                            // Заполняем новый список данжей
-                            dungeons.forEach((dungeon) => {
-                                const option = document.createElement('option');
-                                option.value = dungeon.id;
-                                option.textContent = dungeon.name;
-                                dungeonSelect.appendChild(option);
-                            });
-
-                            // Показываем кнопку "Сохранить", если есть данжи
-                            saveButton.style.display = 'inline-block';
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Ошибка при загрузке данжей:', error);
-                    });
-            }
+                        });
+                        saveButton.style.display = 'inline-block'; // Показываем кнопку
+                    }
+                })
+                .catch((error) => {
+                    console.error('Ошибка при загрузке данжей:', error);
+                    dungeonSelect.innerHTML = '';
+                    const option = document.createElement('option');
+                    option.textContent = 'Ошибка загрузки';
+                    dungeonSelect.appendChild(option);
+                    saveButton.style.display = 'none';
+                });
         }
+
+        // Шаг 3: Вызываем функцию СРАЗУ после загрузки страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Вызываем функцию с ID данжа, который должен быть выбран изначально
+            updateDungeons(initialDungeonId);
+        });
     </script>
 
     <label for="region">Регион:</label>
@@ -93,7 +107,7 @@
     <br><br>
 
     <!-- Генерация случайного времени прохождения -->
-    <p>Случайное время прохождения будет назначено автоматически.</p>
+    <p>Время прохождения данжа назначается автоматически и будет случайным!</p>
 
     <button type="submit">Сохранить</button>
     <a href="/dungeon-runs">
